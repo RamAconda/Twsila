@@ -12,7 +12,8 @@ public class PostDataClass {
     String counter;
 
 
-    public PostDataClass(int profile_picture, String post_puplisher, String post_date, String post_body, int item, String counter) {
+    public PostDataClass(int profile_picture, String post_puplisher,
+                         String post_date, String post_body, int item, String counter) {
         this.Profile_picture = profile_picture;
         this.post_puplisher = post_puplisher;
         this.post_date = post_date;

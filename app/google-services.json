@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "991392731336",
+    "firebase_url": "https://tawsela-fb4ba.firebaseio.com",
+    "project_id": "tawsela-fb4ba",
+    "storage_bucket": "tawsela-fb4ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991392731336:android:426b35200b8463ca",
+        "android_client_info": {
+          "package_name": "com.example.android.twsella"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991392731336-bj3vsvsc4qgblrha6gvo7b6u7edtaron.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.twsella",
+            "certificate_hash": "f0dcc736cdcb6d68bd14a893a52c30dc6841221f"
+          }
+        },
+        {
+          "client_id": "991392731336-omsqlkf49ag2gvsd7sehuivvpjq9ofl7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdSZqVOuM1a-4SZ7jR6JEMojwpEjpu-Jo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "991392731336-omsqlkf49ag2gvsd7sehuivvpjq9ofl7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991392731336:android:416398e5685ba5c8",
+        "android_client_info": {
+          "package_name": "com.example.tahasaber.twsila"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991392731336-br58bo9vmof3p4hfn0h0uvm9gvk7hk3i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tahasaber.twsila",
+            "certificate_hash": "e6dc4f30ddf80b1f9120ca238756a596c8ae68d2"
+          }
+        },
+        {
+          "client_id": "991392731336-omsqlkf49ag2gvsd7sehuivvpjq9ofl7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdSZqVOuM1a-4SZ7jR6JEMojwpEjpu-Jo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "991392731336-omsqlkf49ag2gvsd7sehuivvpjq9ofl7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
