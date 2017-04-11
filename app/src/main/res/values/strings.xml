@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Twsila</string>
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+    <string name="car"> Erkab M3ana </string>
+    <string name="Playing"> Sa3et Kora </string>
+    <string name="specialist"> Specialist </string>
+    <string name="disaster"> Offers </string>
+    <string name="rent"> Egarat </string>
+    <string name="advertisement"> A3lanat </string>
+    <string name="others">Others</string>
+
+    <string-array name="categories_toPostIn">
+        <item>Erkab M3ana</item>
+        <item>Sa3et Kora</item>
+        <item>Specialist</item>
+        <item>Egarat</item>
+        <item>A3lanat</item>
+        <item>Others</item>
+    </string-array>
+
+</resources>
