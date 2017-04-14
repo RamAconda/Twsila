@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //begin the posts fragment logic(code)
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction().add(R.id.main_frahgment_container, new PostsViewFragment()).commit();
         }

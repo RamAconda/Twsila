@@ -17,22 +17,28 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by mohamed on 06/02/17.
  */
 public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdapter.PostViewHolder> {
 
-    PostDataClass[] PostDataClasses;
+    //PostDataClass[] PostDataClasses;
+    ArrayList<PostDataClass> PostDataClasses;
     Context mcContext;
 
-    PostsCardViewAdapter(PostDataClass[] PostDataClasses, Context mcContext) {
+    //changed to be dynamic adding and removing posts to the ArrayList
+    //so I changed the regular array to ArrayList.
+    PostsCardViewAdapter(/*PostDataClass[] PostDataClasses*/
+            ArrayList<PostDataClass> PostDataClasses, Context mcContext) {
         this.PostDataClasses = PostDataClasses;
         this.mcContext = mcContext;
     }
 
     @Override
     public int getItemCount() {
-        return PostDataClasses.length;
+        return PostDataClasses.size();
     }
 
     @Override
@@ -44,12 +50,12 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
 
     @Override
     public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
-        postViewHolder.post_body.setText(PostDataClasses[i].post_body);
-        postViewHolder.post_publisher.setText(PostDataClasses[i].post_puplisher);
-        postViewHolder.post_date.setText(PostDataClasses[i].post_date);
-        postViewHolder.publisher_image.setImageResource(PostDataClasses[i].Profile_picture);
-        postViewHolder.category_icon.setImageResource(PostDataClasses[i].categoryItem);
-        postViewHolder.team_counter.setText(PostDataClasses[i].counter);
+        postViewHolder.post_body.setText(PostDataClasses.get(i).post_body);
+        postViewHolder.post_publisher.setText(PostDataClasses.get(i).post_puplisher);
+        postViewHolder.post_date.setText(PostDataClasses.get(i).post_date);
+        postViewHolder.publisher_image.setImageResource(PostDataClasses.get(i).Profile_picture);
+        postViewHolder.category_icon.setImageResource(PostDataClasses.get(i).categoryItem);
+        postViewHolder.team_counter.setText(PostDataClasses.get(i).counter);
         postViewHolder.msg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
