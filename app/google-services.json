@@ -59,6 +59,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "991392731336-0nihk2crn278k0baqfu6cuseb88mh58h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tahasaber.twsila",
+            "certificate_hash": "f0dcc736cdcb6d68bd14a893a52c30dc6841221f"
+          }
+        },
+        {
           "client_id": "991392731336-br58bo9vmof3p4hfn0h0uvm9gvk7hk3i.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

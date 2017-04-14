@@ -4,10 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.Contacts;
 import android.provider.ContactsContract;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +18,7 @@ import android.widget.TextView;
 /**
  * Created by mohamed on 06/02/17.
  */
+
 public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdapter.PostViewHolder> {
 
     PostDataClass[] PostDataClasses;
@@ -44,12 +43,12 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
 
     @Override
     public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
-        postViewHolder.post_body.setText(PostDataClasses[i].post_body);
-        postViewHolder.post_publisher.setText(PostDataClasses[i].post_puplisher);
-        postViewHolder.post_date.setText(PostDataClasses[i].post_date);
-        postViewHolder.publisher_image.setImageResource(PostDataClasses[i].Profile_picture);
-        postViewHolder.category_icon.setImageResource(PostDataClasses[i].categoryItem);
-        postViewHolder.team_counter.setText(PostDataClasses[i].counter);
+        postViewHolder.post_body.setText(PostDataClasses[i].getPost_body());
+        postViewHolder.post_publisher.setText(PostDataClasses[i].getPost_puplisher());
+        postViewHolder.post_date.setText(PostDataClasses[i].getPost_date().toString());
+        postViewHolder.publisher_image.setImageResource(PostDataClasses[i].getProfile_picture());
+        postViewHolder.category_icon.setImageResource(PostDataClasses[i].getCategory_icon());
+        postViewHolder.team_counter.setText(Integer.toString( PostDataClasses[i].getacceptance()));
         postViewHolder.msg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
