@@ -44,6 +44,16 @@
             android:scrollbarSize="@dimen/cardview_default_radius"
             android:textAlignment="center" />
 
+        <EditText
+            android:id="@+id/Number_of_acceptance"
+            android:hint="# of accepts"
+            android:layout_height="30dp"
+            android:layout_width="70dp"
+            android:layout_toRightOf="@+id/publisher_name"
+            android:layout_marginLeft="70dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@+id/profile_picture" />
+
     </RelativeLayout>
 
 
