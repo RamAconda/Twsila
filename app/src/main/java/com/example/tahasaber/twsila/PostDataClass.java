@@ -8,7 +8,7 @@ public class PostDataClass {
 
     private String post_body;
     private int acceptance;
-    //private String area;
+    private String post_id;
     private  int profile_picture;
     private int category_icon;
     private String category;
@@ -34,7 +34,7 @@ public class PostDataClass {
     }
 
     public PostDataClass(String post_body, int acceptance, String category, int profile_picture, String post_date, boolean isopend, int category_icon, int user_id, String post_puplisher) {
-        this.post_body = post_body;
+
         this.acceptance = acceptance;
         this.category = category;
         this.isopend = isopend;
@@ -43,6 +43,7 @@ public class PostDataClass {
         this.profile_picture = profile_picture;
         this.post_date = post_date;
         this.category_icon=category_icon;
+        this.post_body = post_body;
 
     }
 
@@ -110,4 +111,12 @@ public class PostDataClass {
     public void setPost_date(String post_date) {
         this.post_date = post_date;
     }
+    public String getPost_id() {
+        return post_id;
+    }
+
+    public void setPost_id(String post_id) {
+        this.post_id = post_id;
+    }
+
 }

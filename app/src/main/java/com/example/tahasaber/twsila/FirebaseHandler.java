@@ -24,6 +24,10 @@ public class FirebaseHandler {
         DatabaseReference myRef = database.getReference().child("posts");
 
         String myPostKey = myRef.push().getKey();
+
+        //set post id with the firebase key
+        post.setPost_id(myPostKey);
+
         myRef.child(myPostKey).setValue(post);
 
 
