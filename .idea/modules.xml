@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GP.iml" filepath="$PROJECT_DIR$/GP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Twsila.iml" filepath="$PROJECT_DIR$/Twsila.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

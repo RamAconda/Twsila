@@ -60,7 +60,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         writePostEditText = (EditText) findViewById(R.id.write_post_edit_text);
         NumberOfAcceptance = (EditText) findViewById(R.id.Number_of_acceptance);
 
-        // GoogleAPIClient inistantiation.
+        // GoogleAPIClient instantiation.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
