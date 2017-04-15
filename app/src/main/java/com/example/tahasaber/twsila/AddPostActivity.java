@@ -28,6 +28,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * Created by mohamed on 07/02/17.
@@ -51,14 +54,21 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.write_post_activity);
+
+
 
         toolbar = (Toolbar) findViewById(R.id.post_action_id);
         setSupportActionBar(toolbar);
 
         postButton = (Button) findViewById(R.id.post_button);
+
         writePostEditText = (EditText) findViewById(R.id.write_post_edit_text);
+
         NumberOfAcceptance = (EditText) findViewById(R.id.Number_of_acceptance);
+
+
 
         // GoogleAPIClient inistantiation.
         if (mGoogleApiClient == null) {
@@ -79,6 +89,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        //spinner listener
           spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -118,26 +129,30 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 
         postButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String postContent = writePostEditText.getText().toString();
+               String postContent = writePostEditText.getText().toString();
                 String str_nofacceptance=NumberOfAcceptance.getText().toString();
                 int nofAcceptance;
 
                 //get current Date and time
-               /* Date date=new Date();
-                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                String mycurrentDate=dateFormat.format(date);*/
+                Date date=new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm EEE dd/MM");
+                String mycurrentDate=dateFormat.format(date);
 
+                //check number of acceptanc != empty
                 if(!str_nofacceptance.isEmpty()){
                     nofAcceptance = Integer.parseInt(str_nofacceptance);
                 }
                 else{nofAcceptance=0;}
 
                 if(isLocationEnabled(getBaseContext())) {
+                    // if nunber of acceptance =0 and the category is not A3lanat so the user must enter
+                    // valid number.
                     if(nofAcceptance==0 && !category.equals("A3lanat")){
                         Toast.makeText(getBaseContext(),"You Have To set Number of acceptance Greater Than 0",Toast.LENGTH_SHORT).show();
                     }
                     else{
-                    PostDataClass newPost = new PostDataClass(postContent, nofAcceptance, category, R.drawable.anonymous,"15/4/2017", true, R.drawable.ic_local_play_black_24dp, 20130208, "Mohamed Abd Almageed");
+                        if(nofAcceptance==0){nofAcceptance=-1;}
+                    PostDataClass newPost = new PostDataClass(postContent, nofAcceptance, category, R.drawable.anonymous,mycurrentDate, true, R.drawable.ic_local_play_black_24dp, 20130208, "Mohamed Abd Almageed");
                     FirebaseHandler.writePostToFirebase(newPost, geGeoLocationObject());
                         Toast.makeText(getBaseContext(),"DONE -_-",Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getBaseContext(),MainActivity.class);
@@ -184,8 +199,6 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
           mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
             Log.v("POST",String.valueOf(mLastLocation.getLatitude())) ;
-            Toast.makeText(getBaseContext(),"gpson",Toast.LENGTH_SHORT).show();
-            //mLastLocation.getLongitude();
         }
 
     }
@@ -210,6 +223,8 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         super.onStop();
     }
 
+
+
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
         String locationProviders;
@@ -232,4 +247,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 
 
     }
+
+
+
 }
