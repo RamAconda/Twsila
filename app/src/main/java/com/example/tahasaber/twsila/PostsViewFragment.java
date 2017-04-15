@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -103,16 +104,29 @@ public class PostsViewFragment extends Fragment {
         return recyclerViewInitializationWork(rootView);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        geoQueryToSearchPosts.removeAllListeners();
+    }
+
     private void firebaseInitializationWork() {
         if (posts == null)
             posts = new ArrayList<>();
         //setting up the reference and the geoquery objects
-        postsReference = FirebaseDatabase.getInstance().getReference().child("/posts");
+        postsReference = FirebaseDatabase.getInstance().getReference().child("posts");
         geofireToSearchPosts = new GeoFire(postsReference);
 
         //set the query on the current location and around the user with 1 kilo meter.
         updateLocation();
-        geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(getLastKnownLocation(), 1);
+        geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(
+                /*getLastKnownLocation()*/new GeoLocation(30.1454801,31.318866), 1);
 
         //creating the listener and adding it to the geoQueryToSearchPosts.
         attachTheGeoQueryListener();
@@ -136,6 +150,7 @@ public class PostsViewFragment extends Fragment {
             geoQueryEventListener = new GeoQueryEventListener() {
                 @Override
                 public void onKeyEntered(String key, GeoLocation location) {
+                    Toast.makeText(getActivity() , "onKeyEntered" , Toast.LENGTH_LONG).show();
                     //retrieving the post by listening on the post node.
                     postsReference.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -184,7 +199,7 @@ public class PostsViewFragment extends Fragment {
 
                 @Override
                 public void onGeoQueryReady() {
-
+                    Toast.makeText(getActivity() , "onGeoQueryReady" , Toast.LENGTH_LONG).show();
                 }
 
                 @Override
@@ -192,7 +207,7 @@ public class PostsViewFragment extends Fragment {
 
                 }
             };
-            geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
+            //geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
         }
     }
 
