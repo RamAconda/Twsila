@@ -1,8 +1,10 @@
 package com.example.tahasaber.twsila;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +20,8 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class PostsViewFragment extends Fragment {
+
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -52,13 +57,16 @@ public class PostsViewFragment extends Fragment {
     GeoFire geofireToSearchPosts = null;
     //geoquery object
     GeoQuery geoQueryToSearchPosts = null;
-    //the geolocation variable to send as a parameter to the geoquery object to leasen on.
-    GeoLocation geoLocation = null;
     GeoQueryEventListener geoQueryEventListener = null;
+    //location variable got from the main activity
+    Location location = null;
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+
         posts = new ArrayList<>();
+        firebaseWork();
         View rootView = inflater.inflate(R.layout.posts_fragment, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -87,8 +95,8 @@ public class PostsViewFragment extends Fragment {
         geofireToSearchPosts = new GeoFire(postsReference);
 
         //set the query on the current location and around the user with 1 kilo meter.
-        geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(updateLocation() , 1);
-
+        geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(retrieveLocation() , 1);
+        //creating the listener and adding it to the geoQueryToSearchPosts.
         attachTheGeoQueryListener();
 
     }
@@ -153,11 +161,16 @@ public class PostsViewFragment extends Fragment {
 
                 }
             };
+            geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
         }
     }
 
-    private GeoLocation updateLocation(){
+    private GeoLocation retrieveLocation(){
 
+        MainActivity parent = (MainActivity) getActivity();
+        location = parent.getLocation();
+        GeoLocation geoLocation = new GeoLocation(location.getLatitude() , location.getLongitude());
+        return geoLocation;
     }
 
 }
