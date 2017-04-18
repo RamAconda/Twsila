@@ -79,6 +79,7 @@ public class PostsViewFragment extends Fragment {
     ArrayList<PostDataClass> posts = null;
     //database reference to the posts node in the firebase database
     DatabaseReference postsReference = null;//= FirebaseDatabase.getInstance().getReference().child("/posts");
+    DatabaseReference geofireReference = null;
     //defining the geofire object to query posts
     GeoFire geofireToSearchPosts = null;
     //geoquery object
@@ -121,12 +122,13 @@ public class PostsViewFragment extends Fragment {
             posts = new ArrayList<>();
         //setting up the reference and the geoquery objects
         postsReference = FirebaseDatabase.getInstance().getReference().child("posts");
-        geofireToSearchPosts = new GeoFire(postsReference);
+        geofireReference = FirebaseDatabase.getInstance().getReference().child("geofire");
+        geofireToSearchPosts = new GeoFire(geofireReference);
 
         //set the query on the current location and around the user with 1 kilo meter.
         updateLocation();
         geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(
-                /*getLastKnownLocation()*/new GeoLocation(30.1454801,31.318866), 1);
+                /*getLastKnownLocation()*/new GeoLocation(29.9061584,31.2710861), 1);
 
         //creating the listener and adding it to the geoQueryToSearchPosts.
         attachTheGeoQueryListener();
@@ -156,7 +158,7 @@ public class PostsViewFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //adding the post to the array.
-                            posts.add(0, (PostDataClass) dataSnapshot.getValue());
+                            posts.add(0, dataSnapshot.getValue(PostDataClass.class));
 
                             // notifying the adapter that there is
                             //an element inserted.
@@ -204,7 +206,7 @@ public class PostsViewFragment extends Fragment {
 
                 @Override
                 public void onGeoQueryError(DatabaseError error) {
-
+                    Toast.makeText(getActivity() , "onGeoQueryError" , Toast.LENGTH_LONG).show();
                 }
             };
             //geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
