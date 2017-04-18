@@ -37,12 +37,12 @@ public class PostsViewFragment extends Fragment {
     private static final int PERMISSION_RESOLVER_CODE = 1;
 
 
-    //String s2 = " أنا هاحجز ساعة كورة ؟؟";
+    /*String s2 = " أنا هاحجز ساعة كورة ؟؟";
 
 
-    //PostDataClass mpost = new PostDataClass(s2,10,"sa3etKora",R.drawable.rama,"12/12/2013",true,R.drawable.ic_local_play_black_24dp,20130208,"Mohamed Abd Almageed");
+    PostDataClass mpost = new PostDataClass(s2,10,"sa3etKora",R.drawable.rama,"12/12/2013",true,R.drawable.ic_local_play_black_24dp,20130208,"Mohamed Abd Almageed");
 
-   /* String s = "Hello everyone";
+    String s = "Hello everyone";
     String s3 = "ياجدعان انا قدامي عرض جامد في محل ملابس عند محطة مترو السيدة زينب 3 تشيرت وعليهم 3 هدية حد يشاركني في العرض دة ؟؟؟";
     PostDataClass mpost4 = new PostDataClass(R.drawable.profile, "Taha Saber", "2/5/2017", s2, R.drawable.kora, "6");
     PostDataClass mpost3 = new PostDataClass(R.drawable.me, "Mohamed Gamal", "10/5/2017", s, R.drawable.ic_drive_eta_black_24dp, "2");
@@ -53,8 +53,8 @@ public class PostsViewFragment extends Fragment {
 
 
 =======
-    PostDataClass mpost2 = new PostDataClass(R.drawable.rama, "Mohamed Ramadan", "2/5/2017", s3, R.drawable.ic_local_play_black_24dp, "1");*/
-    /*PostDataClass[] arr = {mpost, mpost, mpost, mpost, mpost, mpost, mpost};
+    PostDataClass mpost2 = new PostDataClass(R.drawable.rama, "Mohamed Ramadan", "2/5/2017", s3, R.drawable.ic_local_play_black_24dp, "1");*//*
+    *//*PostDataClass[] arr = {mpost, mpost, mpost, mpost, mpost, mpost, mpost};
 >>>>>>> c5353a62e04f31d7b954d4cf4384d2f129b5c994*/
 
     /*********************************************************************************************/
@@ -87,6 +87,7 @@ public class PostsViewFragment extends Fragment {
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Toast.makeText(getActivity() , "onCreateView" , Toast.LENGTH_LONG).show();
 
         posts = new ArrayList<>();
 
@@ -102,18 +103,30 @@ public class PostsViewFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Toast.makeText(getActivity() , "onStart" , Toast.LENGTH_LONG).show();
+        //avoiding redundancy in recycler view
+        //if the posts arraylist and the adapter are not null
+        //then this fragment has been called before so we need to
+        //clear the adapter.
+        if(posts != null && mAdapter != null){
+            int size = posts.size();
+            posts.clear();
+            mAdapter.notifyItemRangeRemoved(0,size);
+        }
         geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        Toast.makeText(getActivity() , "onStop" , Toast.LENGTH_LONG).show();
         geoQueryToSearchPosts.removeAllListeners();
     }
 
     private void firebaseInitializationWork() {
-        if (posts == null)
+        //if (posts == null)
             posts = new ArrayList<>();
+
         //setting up the reference and the geoquery objects
         postsReference = FirebaseDatabase.getInstance().getReference().child("posts");
         geofireReference = FirebaseDatabase.getInstance().getReference().child("geofire");
@@ -122,7 +135,7 @@ public class PostsViewFragment extends Fragment {
         //set the query on the current location and around the user with 1 kilo meter.
         updateLocation();
         geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(
-                /*getLastKnownLocation()*/new GeoLocation(29.9061584,31.2710861), 1);
+                getLastKnownLocation()/*new GeoLocation(29.9061584,31.2710861)*/, 1);
 
         //creating the listener and adding it to the geoQueryToSearchPosts.
         attachTheGeoQueryListener();
@@ -142,6 +155,7 @@ public class PostsViewFragment extends Fragment {
     //function to initialize the geofire query listener
     //and attach it to the geofire query object (geoQueryToSearchPosts)
     private void attachTheGeoQueryListener() {
+
         if (geoQueryEventListener == null) {
             geoQueryEventListener = new GeoQueryEventListener() {
                 @Override
@@ -177,7 +191,7 @@ public class PostsViewFragment extends Fragment {
                             //the post the postion has been deleted.
                             PostDataClass post = (PostDataClass) dataSnapshot.getValue();
                             int postPosition = posts.indexOf(post);
-                            posts.remove(post);
+                            posts.remove(postPosition);
                             mAdapter.notifyItemRemoved(postPosition);
                         }
 

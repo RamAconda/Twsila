@@ -54,7 +54,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
         postViewHolder.post_date.setText(PostDataClasses.get(i).getPost_date());
         postViewHolder.publisher_image.setImageResource(PostDataClasses.get(i).getProfile_picture());
         postViewHolder.category_icon.setImageResource(PostDataClasses.get(i).getCategory_icon());
-        postViewHolder.team_counter.setText(PostDataClasses.get(i).getacceptance());
+        postViewHolder.team_counter.setText(String.valueOf(PostDataClasses.get(i).getacceptance()));
 
         postViewHolder.msg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
