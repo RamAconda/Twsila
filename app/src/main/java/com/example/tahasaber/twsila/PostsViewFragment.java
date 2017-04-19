@@ -32,9 +32,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PostsViewFragment extends Fragment {
     private static final int PERMISSION_RESOLVER_CODE = 1;
+    private static final int REQUEST_PERMISSION_CODE = 2;
 
 
     /*String s2 = " أنا هاحجز ساعة كورة ؟؟";
@@ -87,7 +89,7 @@ public class PostsViewFragment extends Fragment {
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Toast.makeText(getActivity() , "onCreateView" , Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "onCreateView", Toast.LENGTH_LONG).show();
 
         posts = new ArrayList<>();
 
@@ -103,15 +105,15 @@ public class PostsViewFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Toast.makeText(getActivity() , "onStart" , Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "onStart", Toast.LENGTH_LONG).show();
         //avoiding redundancy in recycler view
         //if the posts arraylist and the adapter are not null
         //then this fragment has been called before so we need to
         //clear the adapter.
-        if(posts != null && mAdapter != null){
+        if (posts != null && mAdapter != null) {
             int size = posts.size();
             posts.clear();
-            mAdapter.notifyItemRangeRemoved(0,size);
+            mAdapter.notifyItemRangeRemoved(0, size);
         }
         geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
     }
@@ -119,13 +121,13 @@ public class PostsViewFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        Toast.makeText(getActivity() , "onStop" , Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "onStop", Toast.LENGTH_LONG).show();
         geoQueryToSearchPosts.removeAllListeners();
     }
 
     private void firebaseInitializationWork() {
         //if (posts == null)
-            posts = new ArrayList<>();
+        posts = new ArrayList<>();
 
         //setting up the reference and the geoquery objects
         postsReference = FirebaseDatabase.getInstance().getReference().child("posts");
@@ -134,8 +136,12 @@ public class PostsViewFragment extends Fragment {
 
         //set the query on the current location and around the user with 1 kilo meter.
         updateLocation();
+        //we update the userLocation when the listener calls the onChangeLocation
+        //so when we here update the location a single time then the userLocation will
+        //be updated so I can use it in the next line of code.
+        //locationManager.requestSingleUpdate("gps", locationListener, null);
         geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(
-                getLastKnownLocation()/*new GeoLocation(29.9061584,31.2710861)*/, 1);
+                /*userLocation*/getLastKnownLocation()/*new GeoLocation(29.9061584,31.2710861)*/, 1);
 
         //creating the listener and adding it to the geoQueryToSearchPosts.
         attachTheGeoQueryListener();
@@ -144,10 +150,25 @@ public class PostsViewFragment extends Fragment {
 
     private GeoLocation getLastKnownLocation() {
         GeoLocation geoLocation = null;
+        List<String> providers = locationManager.getProviders(true);
+        Location location=null;
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.INTERNET
+            },REQUEST_PERMISSION_CODE);
         }
-        Location location = locationManager.getLastKnownLocation("gps");
+        for (String provider : providers) {
+            Location l = locationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (location == null || l.getAccuracy() < location.getAccuracy()) {
+                // Found best last known location: %s", l);
+                location = l;
+            }
+        }
         geoLocation = new GeoLocation(location.getLatitude() , location.getLongitude());
         return geoLocation;
     }
@@ -254,6 +275,8 @@ public class PostsViewFragment extends Fragment {
                 }
 
             };
+
+
             if (ActivityCompat.checkSelfPermission(getActivity(),
                     android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(getActivity(),
@@ -297,21 +320,15 @@ public class PostsViewFragment extends Fragment {
         switch (requestCode) {
             case PERMISSION_RESOLVER_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(getActivity(),
-                            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                            && ActivityCompat.checkSelfPermission(getActivity(),
-                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
                     locationManager.requestLocationUpdates("gps", /*10 minutes*/10 * 60 * 1000, 0, locationListener);
+                    break;
                 }
+            case REQUEST_PERMISSION_CODE:
+                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    getLastKnownLocation();
+                    break;
+                }
+
         }
     }
 }
