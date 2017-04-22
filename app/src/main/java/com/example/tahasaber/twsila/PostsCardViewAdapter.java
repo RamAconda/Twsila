@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -26,11 +29,12 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     //PostDataClass[] PostDataClasses;
     ArrayList<PostDataClass> PostDataClasses;
     Context mcContext;
+    ShareRequestHandler shareRequestHandler;
 
     //changed to be dynamic adding and removing posts to the ArrayList
     //so I changed the regular array to ArrayList.
     PostsCardViewAdapter(/*PostDataClass[] PostDataClasses*/
-            ArrayList<PostDataClass> PostDataClasses, Context mcContext) {
+                         ArrayList<PostDataClass> PostDataClasses, Context mcContext) {
         this.PostDataClasses = PostDataClasses;
         this.mcContext = mcContext;
     }
@@ -49,12 +53,25 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
 
     @Override
     public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
+        final String postId = PostDataClasses.get(i).getPost_id();
+        final int publisherId = PostDataClasses.get(i).getUser_id();
+        final int myId = 20130155;
         postViewHolder.post_body.setText(PostDataClasses.get(i).getPost_body());
         postViewHolder.post_publisher.setText(PostDataClasses.get(i).getPost_puplisher());
         postViewHolder.post_date.setText(PostDataClasses.get(i).getPost_date());
         postViewHolder.publisher_image.setImageResource(PostDataClasses.get(i).getProfile_picture());
         postViewHolder.category_icon.setImageResource(PostDataClasses.get(i).getCategory_icon());
         postViewHolder.team_counter.setText(String.valueOf(PostDataClasses.get(i).getacceptance()));
+
+        postViewHolder.join_button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                shareRequestHandler = new ShareRequestHandler();
+                shareRequestHandler.sendShareRequest(publisherId, postId, myId);
+                Toast.makeText(mcContext,"Request has sent successfully", Toast.LENGTH_LONG).show();
+
+
+            }
+        });
 
         postViewHolder.msg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +96,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
             }
         });
 
+
     }
 
 
@@ -93,8 +111,10 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
         public TextView post_date;
         public ImageView publisher_image;
         public Button msg_btn;
+        public Button join_button;
         public ImageView category_icon;
         public TextView team_counter;
+
 
         public PostViewHolder(View itemView) {
             super(itemView);
@@ -103,6 +123,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
             post_date = (TextView) itemView.findViewById(R.id.post_date);
             publisher_image = (ImageView) itemView.findViewById(R.id.profile_image);
             msg_btn = (Button) itemView.findViewById(R.id.msg_btn);
+            join_button = (Button) itemView.findViewById(R.id.join_btn);
             category_icon = (ImageView) itemView.findViewById(R.id.icon_image);
             team_counter = (TextView) itemView.findViewById(R.id.counter_id);
 
