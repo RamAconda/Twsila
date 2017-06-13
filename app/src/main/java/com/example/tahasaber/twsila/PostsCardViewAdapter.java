@@ -54,7 +54,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     @Override
     public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
         final String postId = PostDataClasses.get(i).getPost_id();
-        final int publisherId = PostDataClasses.get(i).getUser_id();
+        final String publisherId = PostDataClasses.get(i).getUser_id();
         final int myId = 20130155;
         postViewHolder.post_body.setText(PostDataClasses.get(i).getPost_body());
         postViewHolder.post_publisher.setText(PostDataClasses.get(i).getPost_puplisher());

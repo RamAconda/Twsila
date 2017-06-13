@@ -21,12 +21,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,13 +42,14 @@ import java.util.Date;
 public class AddPostActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private Toolbar toolbar;
+    private TextView publisher;
     private Button postButton;
     private EditText writePostEditText;
     private EditText NumberOfAcceptance;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private String category;
-
+    private FirebaseUser mUser;
 
 
 
@@ -57,10 +62,13 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 
         setContentView(R.layout.write_post_activity);
 
-
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         toolbar = (Toolbar) findViewById(R.id.post_action_id);
         setSupportActionBar(toolbar);
+
+        publisher = (TextView) findViewById(R.id.publisher_name);
+        publisher.setText(mUser.getDisplayName());
 
         postButton = (Button) findViewById(R.id.post_button);
 
@@ -150,7 +158,8 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                     }
                     else{
                         if(nofAcceptance==0){nofAcceptance=-1;}
-                    PostDataClass newPost = new PostDataClass(postContent, nofAcceptance, category, R.drawable.anonymous,mycurrentDate, true, R.drawable.ic_local_play_black_24dp, 20130208, "Mohamed Abd Almageed");
+                    PostDataClass newPost = new PostDataClass(postContent, nofAcceptance, category,
+                            R.drawable.anonymous,mycurrentDate, true, R.drawable.ic_local_play_black_24dp, mUser.getUid(), mUser.getDisplayName());
                     FirebaseHandler.writePostToFirebase(newPost, geGeoLocationObject());
                         Toast.makeText(getBaseContext(),"DONE -_-",Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getBaseContext(),MainActivity.class);

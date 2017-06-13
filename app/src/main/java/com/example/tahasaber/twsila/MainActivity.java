@@ -1,5 +1,6 @@
 package com.example.tahasaber.twsila;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -14,19 +15,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 //import com.google.android.gms.appindexing.AppIndex;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks
         , GoogleApiClient.OnConnectionFailedListener {
 
 
+    private static final int  RC_SIGN_IN = 1;
     // Google api client to get the last location of the device.
     //private GoogleApiClient mGoogleApiClient = null;
     private Location mLastLocation = null;
@@ -38,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     //firebase auth variable
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private DatabaseReference usersRef;
     private GoogleApiClient client;
 
     @Override
@@ -49,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //initializing firebase auth and user.
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         /*if(mUser == null){
             Intent signInIntent = new Intent(this , SignUpActivity.class);
             startActivity(signInIntent);
@@ -72,8 +85,69 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //moved to the function defineGoogleApiClient
         //client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                mUser = firebaseAuth.getCurrentUser();
+                if (mUser != null) {
+ //                   checkUserExestance();
+                } else {
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
 
+    }
+    private Context activityContext = this;
+    private void checkUserExestance() {
+        usersRef.child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseUser user = dataSnapshot.getValue(FirebaseUser.class);
+                if (user == null){
+                    usersRef.child(mUser.getUid()).setValue(mUser);
+                    Toast.makeText(activityContext , mUser.getDisplayName() , Toast.LENGTH_LONG).show();
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAuth.removeAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SIGN_IN){
+            if(resultCode == RESULT_OK){
+//                checkUserExestance();
+            }
+            else if(resultCode == RESULT_CANCELED){
+                //code comes here
+                //but we don't need anything right now.
+            }
+        }
     }
 
     @Override

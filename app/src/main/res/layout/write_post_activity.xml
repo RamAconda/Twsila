@@ -23,7 +23,7 @@
             android:layout_width="60dp"
             android:layout_height="55dp"
             android:layout_margin="8dp"
-            android:src="@drawable/me" />
+            android:src="@drawable/anonymous" />
 
         <TextView
             android:id="@+id/publisher_name"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/profile_picture"
-            android:text="Mohamed Abd Almageed"
+            android:text=""
             android:textColor="#000"
             android:textSize="14dp" />
 

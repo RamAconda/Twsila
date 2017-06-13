@@ -121,7 +121,7 @@ public class PostsViewFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Toast.makeText(getActivity(), "onStart", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "onStart in fragment", Toast.LENGTH_LONG).show();
         //avoiding redundancy in recycler view
         //if the posts arraylist and the adapter are not null
         //then this fragment has been called before so we need to
@@ -164,7 +164,7 @@ public class PostsViewFragment extends Fragment {
 
     }
 
-
+/**
     //this function is all about making alert to enable the gps if
     //it's disabled,
     /*private void buildAlertMessageNoGps() {
@@ -373,22 +373,23 @@ public class PostsViewFragment extends Fragment {
         return rootView;
     }
 
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_RESOLVER_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates("gps", *//*10 minutes*//*10 * 60 * 1000, 0, locationListener);
-                    break;
-                }
-            case REQUEST_PERMISSION_CODE:
-                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    getLastKnownLocation();
-                    break;
-                }
 
-        }
-    }*/
+//    /*@Override
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        switch (requestCode) {
+//            case PERMISSION_RESOLVER_CODE:
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    locationManager.requestLocationUpdates("gps", *//*10 minutes*//*10 * 60 * 1000, 0, locationListener);
+//                    break;
+//                }
+//            case REQUEST_PERMISSION_CODE:
+//                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//                    getLastKnownLocation();
+//                    break;
+//                }
+//
+//        }
+//    }*/
 
     private void enableLocation(){
         GoogleApiClient googleApiClient = new GoogleApiClient.Builder(getActivity())
