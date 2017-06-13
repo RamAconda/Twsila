@@ -112,6 +112,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         ft.commit();
 
     }
+    public void setShareRequest(View view) {
+
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.main_frahgment_container, new ShareRequestsFragment());
+        ft.addToBackStack(null);
+        ft.commit();
+
+    }
+
 
     private void defineGoogleApiClient() {
         if (client == null) {
