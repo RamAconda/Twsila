@@ -12,9 +12,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -53,27 +55,6 @@ import java.util.List;
 public class PostsViewFragment extends Fragment {
     private static final int PERMISSION_RESOLVER_CODE = 1;
     private static final int REQUEST_PERMISSION_CODE = 2;
-
-
-    /*String s2 = " أنا هاحجز ساعة كورة ؟؟";
-
-
-    PostDataClass mpost = new PostDataClass(s2,10,"sa3etKora",R.drawable.rama,"12/12/2013",true,R.drawable.ic_local_play_black_24dp,20130208,"Mohamed Abd Almageed");
-
-    String s = "Hello everyone";
-    String s3 = "ياجدعان انا قدامي عرض جامد في محل ملابس عند محطة مترو السيدة زينب 3 تشيرت وعليهم 3 هدية حد يشاركني في العرض دة ؟؟؟";
-    PostDataClass mpost4 = new PostDataClass(R.drawable.profile, "Taha Saber", "2/5/2017", s2, R.drawable.kora, "6");
-    PostDataClass mpost3 = new PostDataClass(R.drawable.me, "Mohamed Gamal", "10/5/2017", s, R.drawable.ic_drive_eta_black_24dp, "2");
-<<<<<<< HEAD
-    PostDataClass mpost2 = new PostDataClass(R.drawable.rama, "Mohamed Ramadan", "2/5/2017", s3, R.drawable.ic_local_play_black_24dp, "1");
-    //changed to arraylist
-    //PostDataClass[] arr = {mpost, mpost3, mpost4, mpost2, mpost3, mpost4, mpost2};
-
-
-=======
-    PostDataClass mpost2 = new PostDataClass(R.drawable.rama, "Mohamed Ramadan", "2/5/2017", s3, R.drawable.ic_local_play_black_24dp, "1");*//*
-    *//*PostDataClass[] arr = {mpost, mpost, mpost, mpost, mpost, mpost, mpost};
->>>>>>> c5353a62e04f31d7b954d4cf4384d2f129b5c994*/
 
     /*********************************************************************************************/
 
@@ -191,6 +172,7 @@ public class PostsViewFragment extends Fragment {
         getActivity().sendBroadcast(intent);
     }*/
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private GeoLocation getLastKnownLocation() {
         /*if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             buildAlertMessageNoGps();
