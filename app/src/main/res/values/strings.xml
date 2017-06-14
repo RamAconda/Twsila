@@ -16,6 +16,7 @@
     <string name="rent"> Egarat </string>
     <string name="advertisement"> A3lanat </string>
     <string name="others">Others</string>
+    <string name="usersToSharePost">number of users to share !</string>
 
     <string-array name="categories_toPostIn">
         <item>Erkab M3ana</item>
