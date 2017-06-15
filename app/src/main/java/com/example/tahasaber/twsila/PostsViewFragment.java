@@ -52,7 +52,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostsViewFragment extends Fragment {
+public class PostsViewFragment extends Fragment implements PostsLocationConnector{
     private static final int PERMISSION_RESOLVER_CODE = 1;
     private static final int REQUEST_PERMISSION_CODE = 2;
 
@@ -94,7 +94,7 @@ public class PostsViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.posts_fragment, container, false);
 
         //initialization work of the firebase database
-        firebaseInitializationWork();
+        //firebaseInitializationWork();
 
         return recyclerViewInitializationWork(rootView);
     }
@@ -112,19 +112,21 @@ public class PostsViewFragment extends Fragment {
             posts.clear();
             mAdapter.notifyItemRangeRemoved(0, size);
         }
-        geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
+        if(geoQueryToSearchPosts != null && geoQueryEventListener != null)
+            geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Toast.makeText(getActivity(), "onStop", Toast.LENGTH_LONG).show();
-        geoQueryToSearchPosts.removeAllListeners();
+        if(geoQueryToSearchPosts != null)
+            geoQueryToSearchPosts.removeAllListeners();
     }
 
-    private void firebaseInitializationWork() {
+    private void firebaseInitializationWork(GeoLocation geoLocation) {
         //if (posts == null)
-        posts = new ArrayList<>();
+        //posts = new ArrayList<>();
 
         //setting up the reference and the geoquery objects
         postsReference = FirebaseDatabase.getInstance().getReference().child("posts");
@@ -132,12 +134,16 @@ public class PostsViewFragment extends Fragment {
         geofireToSearchPosts = new GeoFire(geofireReference);
 
         //set the query on the current location and around the user with 1 kilo meter.
-        InitializeLocation();
+
+        //InitializeLocation();
+
         //we update the userLocation when the listener calls the onChangeLocation
         //so when we here update the location a single time then the userLocation will
         //be updated so I can use it in the next line of code.
         //locationManager.requestSingleUpdate("gps", locationListener, null);
-        GeoLocation geoLocation = getLastKnownLocation();
+
+        //GeoLocation geoLocation = getLastKnownLocation();
+
         geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(geoLocation, 1);
 
         //creating the listener and adding it to the geoQueryToSearchPosts.
@@ -145,64 +151,25 @@ public class PostsViewFragment extends Fragment {
 
     }
 
-/**
-    //this function is all about making alert to enable the gps if
-    //it's disabled,
-    /*private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
+    private View recyclerViewInitializationWork(View rootView) {
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new PostsCardViewAdapter(posts, getActivity());
+        mRecyclerView.setAdapter(mAdapter);
 
-    private void enableGPS(){
-        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
-        intent.putExtra("enabled" , true);
-        getActivity().sendBroadcast(intent);
-    }*/
+        writePostButton = (FloatingActionButton) rootView.findViewById(R.id.write_post_button);
+        writePostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private GeoLocation getLastKnownLocation() {
-        /*if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            buildAlertMessageNoGps();
-        }*/
+                // Snackbar.make(v, "FAB Clicked", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), AddPostActivity.class);
+                startActivity(intent);
 
-        List<String> providers = locationManager.getProviders(true);
-        Location location=null;
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity()
-                , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.INTERNET
-            },REQUEST_PERMISSION_CODE);
-        }
-        for (String provider : providers) {
-            Location l = locationManager.getLastKnownLocation(provider);
-            if (l == null) {
-                continue;
             }
-            if (location == null || l.getAccuracy() < location.getAccuracy()) {
-                // Found best last known location: %s", l);
-                location = l;
-            }
-        }
-        return new GeoLocation(location.getLatitude() , location.getLongitude());
-
-        /*LocationUtils utils = new LocationUtils();
-        return utils.getLastLocation(getActivity());*/
+        });
+        return rootView;
     }
 
     //function to initialize the geofire query listener
@@ -274,88 +241,6 @@ public class PostsViewFragment extends Fragment {
         }
     }
 
-    private void /*GeoLocation*/ InitializeLocation() {
-        //first time to get location, which means there is no listener on the location
-        //define the location manager using the parent activity.
-        //locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        // the location listener logic
-
-        enableLocation();
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                GeoLocation geoLocation;
-                if(location == null){
-                    geoLocation = getLastKnownLocation();
-                }
-                else{
-                    geoLocation = new GeoLocation(location.getLatitude(),location.getLongitude());
-                }
-                if (geoQueryToSearchPosts != null)
-                    geoQueryToSearchPosts.setCenter(geoLocation);
-                //userLocation = geoLocation;
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-                /*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);*/
-                enableLocation();
-            }
-
-        };
-
-
-        /*if (ActivityCompat.checkSelfPermission(getActivity(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(new String[]{
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.INTERNET}, PERMISSION_RESOLVER_CODE);
-
-        }*/
-        locationManager.requestLocationUpdates("gps", /*10 minutes*/10 * 60 * 1000, 0, locationListener);
-        //return userLocation;
-    }
-
-
-    private View recyclerViewInitializationWork(View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PostsCardViewAdapter(posts, getActivity());
-        mRecyclerView.setAdapter(mAdapter);
-
-        writePostButton = (FloatingActionButton) rootView.findViewById(R.id.write_post_button);
-        writePostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Snackbar.make(v, "FAB Clicked", Snackbar.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), AddPostActivity.class);
-                startActivity(intent);
-
-            }
-        });
-        return rootView;
-    }
-
-
 //    /*@Override
 //    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 //        switch (requestCode) {
@@ -373,48 +258,18 @@ public class PostsViewFragment extends Fragment {
 //        }
 //    }*/
 
-    private void enableLocation(){
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addApi(LocationServices.API).build();
-        googleApiClient.connect();
+    private boolean firstTimeCallChangeLocation = true;
+    @Override
+    public void changeLocation(Location location) {
+        GeoLocation geoLocation = new GeoLocation(location.getLatitude() , location.getLongitude());
+        if(firstTimeCallChangeLocation) {
+            firebaseInitializationWork(geoLocation);
+            geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
+            firstTimeCallChangeLocation = false;
+        }
+        else {
+            geoQueryToSearchPosts.setCenter(geoLocation);
+        }
 
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(10000 / 2);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-        builder.setAlwaysShow(true);
-
-        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            public static final String TAG = "hello";
-            public static final int REQUEST_CHECK_SETTINGS = 0;
-
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        Log.i(TAG, "All location settings are satisfied.");
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
-
-                        try {
-                            // Show the dialog by calling startResolutionForResult(), and check the result
-                            // in onActivityResult().
-                            status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.i(TAG, "PendingIntent unable to execute request.");
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.i(TAG, "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
-                        break;
-                }
-            }
-        });
     }
-
 }
