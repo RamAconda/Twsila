@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -181,25 +182,8 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
                 public void onKeyEntered(String key, GeoLocation location) {
                     Log.d("Anaconda", "in fragment onKeyEntered function");
                     //retrieving the post by listening on the post node.
-                    postsReference.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.d("Anaconda", "in fragment onKeyEntered onDataChange function");
-                            //adding the post to the array.
-                            posts.add(0, dataSnapshot.getValue(PostDataClass.class));
-
-                            // notifying the adapter that there is
-                            //an element inserted.
-                            mAdapter.notifyItemInserted(0);
-                            //scroll to the beginning of the list
-                            mRecyclerView.smoothScrollToPosition(0);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.d("Anaconda", "in fragment onCancelled function");
-                        }
-                    });
+                    RetreivePost retreivePost = new RetreivePost();
+                    retreivePost.execute(postsReference.child(key));
                 }
 
                 @Override
@@ -274,5 +258,48 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
             geoQueryToSearchPosts.setCenter(geoLocation);
         }
 
+    }
+
+    public class RetreivePost extends AsyncTask<DatabaseReference,Void,PostDataClass> {
+        PostDataClass newPost = null;
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected PostDataClass doInBackground(DatabaseReference... postsRef) {
+            for(DatabaseReference postRef : postsRef){
+                postRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("Anaconda", "in fragment onKeyEntered onDataChange function");
+                        //adding the post to the array.
+                        newPost = dataSnapshot.getValue(PostDataClass.class);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("Anaconda", "in fragment onCancelled function");
+                    }
+                });
+
+            }
+            while(newPost == null){
+                //waiting for retreiving the post
+            }
+            return newPost;
+        }
+
+        @Override
+        protected void onPostExecute(PostDataClass postDataClass) {
+            posts.add(0, postDataClass);
+
+            // notifying the adapter that there is
+            //an element inserted.
+            mAdapter.notifyItemInserted(0);
+            //scroll to the beginning of the list
+            mRecyclerView.smoothScrollToPosition(0);
+        }
     }
 }
