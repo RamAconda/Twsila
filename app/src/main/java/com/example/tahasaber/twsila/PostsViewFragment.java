@@ -63,11 +63,6 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton writePostButton;
     /*********************************************************************************************/
-
-    //location variables
-    LocationManager locationManager = null;
-    LocationListener locationListener = null;
-    /*********************************************************************************************/
     //posts array list
     ArrayList<PostDataClass> posts = null;
     //database reference to the posts node in the firebase database
@@ -79,22 +74,17 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     GeoQuery geoQueryToSearchPosts = null;
     GeoQueryEventListener geoQueryEventListener = null;
     //location variable got from the main activity
-    Location location = null;
-    GeoLocation userLocation = null;
 
     /*********************************************************************************************/
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Toast.makeText(getActivity(), "onCreateView", Toast.LENGTH_LONG).show();
+        Log.d("logging", "in fragment create function");
 
         posts = new ArrayList<>();
 
         //initialization work of the recycler view
         View rootView = inflater.inflate(R.layout.posts_fragment, container, false);
-
-        //initialization work of the firebase database
-        //firebaseInitializationWork();
 
         return recyclerViewInitializationWork(rootView);
     }
@@ -102,7 +92,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     @Override
     public void onStart() {
         super.onStart();
-        Toast.makeText(getActivity(), "onStart in fragment", Toast.LENGTH_LONG).show();
+        Log.e("Anaconda", "in fragment start function");
         //avoiding redundancy in recycler view
         //if the posts arraylist and the adapter are not null
         //then this fragment has been called before so we need to
@@ -117,8 +107,15 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Anaconda", "in fragment resume function");
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
+        Log.d("Anaconda", "in fragment stop function");
         Toast.makeText(getActivity(), "onStop", Toast.LENGTH_LONG).show();
         if(geoQueryToSearchPosts != null)
             geoQueryToSearchPosts.removeAllListeners();
@@ -129,6 +126,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
         //posts = new ArrayList<>();
 
         //setting up the reference and the geoquery objects
+        Log.d("Anaconda", "in fragment firebaseInitializationWork function");
         postsReference = FirebaseDatabase.getInstance().getReference().child("posts");
         geofireReference = FirebaseDatabase.getInstance().getReference().child("geofire");
         geofireToSearchPosts = new GeoFire(geofireReference);
@@ -152,6 +150,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     }
 
     private View recyclerViewInitializationWork(View rootView) {
+        Log.d("Anaconda", "in fragment recyclerViewInitializationWork function");
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -175,16 +174,17 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     //function to initialize the geofire query listener
     //and attach it to the geofire query object (geoQueryToSearchPosts)
     private void attachTheGeoQueryListener() {
-
+        Log.d("Anaconda", "in fragment attachTheGeoQueryListener function");
         if (geoQueryEventListener == null) {
             geoQueryEventListener = new GeoQueryEventListener() {
                 @Override
                 public void onKeyEntered(String key, GeoLocation location) {
-                    Toast.makeText(getActivity() , "onKeyEntered" , Toast.LENGTH_LONG).show();
+                    Log.d("Anaconda", "in fragment onKeyEntered function");
                     //retrieving the post by listening on the post node.
                     postsReference.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d("Anaconda", "in fragment onKeyEntered onDataChange function");
                             //adding the post to the array.
                             posts.add(0, dataSnapshot.getValue(PostDataClass.class));
 
@@ -197,16 +197,18 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
+                            Log.d("Anaconda", "in fragment onCancelled function");
                         }
                     });
                 }
 
                 @Override
                 public void onKeyExited(String key) {
+                    Log.d("Anaconda", "in fragment onKeyExited function");
                     postsReference.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d("Anaconda", "in fragment onKeyExited onDataChange function");
                             //deleting the post from the posts array and notify the adapter that
                             //the post the postion has been deleted.
                             PostDataClass post = (PostDataClass) dataSnapshot.getValue();
@@ -217,7 +219,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
+                            Log.d("Anaconda", "in fragment onCancelled function");
                         }
                     });
                 }
@@ -229,12 +231,12 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
 
                 @Override
                 public void onGeoQueryReady() {
-                    Toast.makeText(getActivity() , "onGeoQueryReady" , Toast.LENGTH_LONG).show();
+                    Log.d("Anaconda", "in fragment onGeoQueryReady function");
                 }
 
                 @Override
                 public void onGeoQueryError(DatabaseError error) {
-                    Toast.makeText(getActivity() , "onGeoQueryError" , Toast.LENGTH_LONG).show();
+                    Log.d("Anaconda", "in fragment onGeoQueryError function");
                 }
             };
             //geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
@@ -261,6 +263,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     private boolean firstTimeCallChangeLocation = true;
     @Override
     public void changeLocation(Location location) {
+        Log.d("Anaconda", "in fragment changeLocation function");
         GeoLocation geoLocation = new GeoLocation(location.getLatitude() , location.getLongitude());
         if(firstTimeCallChangeLocation) {
             firebaseInitializationWork(geoLocation);

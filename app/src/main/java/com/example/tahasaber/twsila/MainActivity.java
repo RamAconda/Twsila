@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Anaconda", "in activity create function");
         setContentView(R.layout.activity_main);
 
         //initializing firebase auth and user.
@@ -124,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void addUserToDatabaseIfNotThere() {
+        Log.d("Anaconda", "in activity addUserToDatabaseIfNotThere function");
+        mUser = mAuth.getCurrentUser();
         usersRef.child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -144,13 +147,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onStart() {
         super.onStart();
-
+        Log.d("Anaconda", "in activity start function");
         googleApiClient.connect();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("Anaconda", "in activity resume function");
         mAuth.addAuthStateListener(authStateListener);
         if (googleApiClient.isConnected()) {
             requestLocationUpdates();
@@ -160,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("Anaconda", "in activity pause function");
         mAuth.removeAuthStateListener(authStateListener);
         if(googleApiClient.isConnected())
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
@@ -168,12 +173,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d("Anaconda", "in activity stop function");
         googleApiClient.disconnect();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("Anaconda", "in activity onActivityResult function");
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 addUserToDatabaseIfNotThere();
@@ -186,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        Log.d("Anaconda", "in activity onOptionsItemSelected function");
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
 
@@ -197,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     public void notifications(View view) {
-
+        Log.d("Anaconda", "in activity notifications function");
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_frahgment_container, new NotificationActivity());
         ft.addToBackStack(null);
@@ -206,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void getProfileLayout(View view) {
+        Log.d("Anaconda", "in activity getProfileLayout function");
         Intent intent = new Intent(getApplicationContext(), UserProfileActivity.class);
         startActivity(intent);
 
@@ -213,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void setFavourites(View view) {
-
+        Log.d("Anaconda", "in activity setFavourites function");
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_frahgment_container, new FavouritCategoriesFragment());
         ft.addToBackStack(null);
@@ -222,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void setShareRequest(View view) {
-
+        Log.d("Anaconda", "in activity setShareRequest function");
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_frahgment_container, new ShareRequestsFragment());
         ft.addToBackStack(null);
@@ -232,11 +240,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     private void initializeLocationWork() {
+        Log.d("Anaconda", "in activity initializeLocationWork function");
         defineGoogleApiClient();
         defineLocationRequest(5); // get location update every 5 ms, will be changed after the first call
     }
 
     private void defineGoogleApiClient() {
+        Log.d("Anaconda", "in activity defineGoogleApiClient function");
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -245,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void defineLocationRequest(int interval) {
+        Log.d("Anaconda", "in activity defineLocationRequest function");
         locationRequest = new LocationRequest();
         locationRequest.setInterval(interval);
         locationRequest.setFastestInterval(interval / 2);
@@ -252,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void requestLocationUpdates() {
-
+        Log.d("Anaconda", "in activity requestLocationUpdates function");
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 &&
@@ -272,21 +283,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d("Anaconda", "in activity onConnected function");
         requestLocationUpdates();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d("Anaconda", "in activity onConnectionSuspended function");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.d("Anaconda", "in activity onConnectionFailed function");
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("Anaconda", "in activity onLocationChanged function");
         postsLocationConnector.changeLocation(location);
         int interval = 10*60*1000;
         if(locationRequest.getInterval() < interval){
@@ -297,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void enableLocation(){
-
+        Log.d("Anaconda", "in activity enableLocation function");
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
 
