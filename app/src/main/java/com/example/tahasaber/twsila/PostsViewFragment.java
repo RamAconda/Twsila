@@ -227,23 +227,6 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
         }
     }
 
-//    /*@Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        switch (requestCode) {
-//            case PERMISSION_RESOLVER_CODE:
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    locationManager.requestLocationUpdates("gps", *//*10 minutes*//*10 * 60 * 1000, 0, locationListener);
-//                    break;
-//                }
-//            case REQUEST_PERMISSION_CODE:
-//                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                    getLastKnownLocation();
-//                    break;
-//                }
-//
-//        }
-//    }*/
-
     private boolean firstTimeCallChangeLocation = true;
     @Override
     public void changeLocation(Location location) {
@@ -293,13 +276,14 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
 
         @Override
         protected void onPostExecute(PostDataClass postDataClass) {
-            posts.add(0, postDataClass);
+            posts.add(postDataClass);
 
             // notifying the adapter that there is
             //an element inserted.
-            mAdapter.notifyItemInserted(0);
+            mAdapter.notifyItemInserted(posts.size()-1);
+
             //scroll to the beginning of the list
-            mRecyclerView.smoothScrollToPosition(0);
+            //mRecyclerView.smoothScrollToPosition(0);
         }
     }
 }

@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 mUser = firebaseAuth.getCurrentUser();
                 if (mUser != null) {
-                    addUserToDatabaseIfNotThere();
+ //                   addUserToDatabaseIfNotThere();
                 } else {
                     startActivityForResult(
                             AuthUI.getInstance()
@@ -130,10 +130,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         usersRef.child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                FirebaseUser user = dataSnapshot.getValue(FirebaseUser.class);
+                UserData user = dataSnapshot.getValue(UserData.class);
                 if (user == null) {
-                    usersRef.child(mUser.getUid()).setValue(mUser);
-                    Toast.makeText(context, mUser.getDisplayName(), Toast.LENGTH_LONG).show();
+                    user = new UserData(mUser.getUid() , mUser.getDisplayName() , mUser.getEmail());
+                    usersRef.child(mUser.getUid()).setValue(user);
                 }
             }
 
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void initializeLocationWork() {
         Log.d("Anaconda", "in activity initializeLocationWork function");
         defineGoogleApiClient();
-        defineLocationRequest(5); // get location update every 5 ms, will be changed after the first call
+        defineLocationRequest(10); // get location update every 5 ms, will be changed after the first call
     }
 
     private void defineGoogleApiClient() {
@@ -300,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onLocationChanged(Location location) {
         Log.d("Anaconda", "in activity onLocationChanged function");
+
         postsLocationConnector.changeLocation(location);
         int interval = 10*60*1000;
         if(locationRequest.getInterval() < interval){
