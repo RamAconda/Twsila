@@ -41,7 +41,7 @@
             android:layout_height="30dp"
             android:layout_below="@id/publisher_name"
             android:layout_toRightOf="@id/profile_picture"
-            android:scrollbarSize="@dimen/cardview_default_radius"
+            android:scrollbarSize="20dp"
             android:textAlignment="center" />
 
 
