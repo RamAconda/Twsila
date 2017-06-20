@@ -2,7 +2,6 @@ package com.example.tahasaber.twsila;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.provider.Contacts;
 import android.provider.ContactsContract;
@@ -83,7 +82,8 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
             public void onClick(View v) {
 
 
-
+                shareRequestHandler =new ShareRequestHandler();
+                shareRequestHandler.write_messege("hello",mUser.getUid(),postId);
                /* ContentValues values = new ContentValues();
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, 001);
                 values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
@@ -91,11 +91,11 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
                 values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM);
                 values.put(ContactsContract.CommonDataKinds.Phone.LABEL, "Nirav");
                 Uri dataUri = mcContext.getContentResolver().insert(android.provider.ContactsContract.Data.CONTENT_URI, values);*/
-                addContact("twsella_ta", "01121818822");
+               /* addContact("twsella_ta", "01121818822");
                 Uri uri = Uri.parse("smsto:" + "01121818822");
                 Intent i = new Intent(Intent.ACTION_SENDTO, uri);
                 i.setPackage("com.whatsapp");
-                mcContext.startActivity(Intent.createChooser(i, ""));
+                mcContext.startActivity(Intent.createChooser(i, ""));*/
 
 
             }

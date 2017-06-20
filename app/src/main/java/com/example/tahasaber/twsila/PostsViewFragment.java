@@ -118,7 +118,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
 
         //GeoLocation geoLocation = getLastKnownLocation();
 
-        geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(geoLocation, 1);
+        geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(geoLocation, 1000);
 
         //creating the listener and adding it to the geoQueryToSearchPosts.
         attachTheGeoQueryListener();
