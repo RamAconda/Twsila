@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -52,26 +55,45 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     }
 
     @Override
-    public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
+    public void onBindViewHolder(final PostViewHolder postViewHolder, int i) {
         final String postId = PostDataClasses.get(i).getPost_id();
         final String publisherId = PostDataClasses.get(i).getUser_id();
-        final int myId = 20130155;
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        final String myId = currentUser.getUid();
+
+        final int noOfAcceptance = PostDataClasses.get(i).getAcceptance();
         postViewHolder.post_body.setText(PostDataClasses.get(i).getPost_body());
         postViewHolder.post_publisher.setText(PostDataClasses.get(i).getPost_puplisher());
         postViewHolder.post_date.setText(PostDataClasses.get(i).getPost_date());
         postViewHolder.publisher_image.setImageResource(PostDataClasses.get(i).getProfile_picture());
         postViewHolder.category_icon.setImageResource(PostDataClasses.get(i).getCategory_icon());
-        postViewHolder.team_counter.setText(String.valueOf(PostDataClasses.get(i).getacceptance()));
+        postViewHolder.team_counter.setText(String.valueOf(PostDataClasses.get(i).getAcceptance()));
+
 
         postViewHolder.join_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                shareRequestHandler = new ShareRequestHandler();
-                shareRequestHandler.sendShareRequest(publisherId, postId, myId);
-                Toast.makeText(mcContext,"Request has sent successfully", Toast.LENGTH_LONG).show();
+                if (publisherId.equals(myId)) {
+                    Toast.makeText(mcContext, "You can't share your post", Toast.LENGTH_LONG).show();
+
+
+                } else if (noOfAcceptance <= 0) {
+                    Toast.makeText(mcContext, "Sorry! Post is closed", Toast.LENGTH_LONG).show();
+                } else {
+                    shareRequestHandler = new ShareRequestHandler();
+                    shareRequestHandler.sendShareRequest(publisherId, postId, myId);
+                    Toast.makeText(mcContext, "Request has sent successfully", Toast.LENGTH_LONG).show();
+
+
+                }
+
+
 
 
             }
+
+
         });
+
 
         postViewHolder.msg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +148,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
             join_button = (Button) itemView.findViewById(R.id.join_btn);
             category_icon = (ImageView) itemView.findViewById(R.id.icon_image);
             team_counter = (TextView) itemView.findViewById(R.id.counter_id);
+
 
         }
     }

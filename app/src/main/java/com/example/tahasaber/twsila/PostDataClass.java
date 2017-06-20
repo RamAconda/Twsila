@@ -63,7 +63,7 @@ public class PostDataClass {
         this.post_body = post_body;
     }
 
-    public int getacceptance() {
+    public int getAcceptance() {
         return acceptance;
     }
 
@@ -118,5 +118,7 @@ public class PostDataClass {
     public void setPost_id(String post_id) {
         this.post_id = post_id;
     }
+
+
 
 }

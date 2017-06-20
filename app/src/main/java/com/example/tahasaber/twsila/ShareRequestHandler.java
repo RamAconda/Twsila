@@ -11,19 +11,19 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class ShareRequestHandler {
 
-    public void sendShareRequest(String publisherID, String postID, int requestID) {
+    public void sendShareRequest(String publisherID, String postID, String requestID) {
 
 
         Log.v("pub_id", publisherID);
         Log.v("post_id", postID);
-        Log.v("req_id", Integer.toString(requestID));
+        Log.v("req_id", requestID);
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference().child("share_requests");
 
         myRef.child(publisherID);
-        myRef.child(publisherID).child(postID).child(Integer.toString(requestID)).setValue(Integer.toString(requestID));
+        myRef.child(publisherID).child(postID).child(requestID).setValue(requestID);
 
 
     }

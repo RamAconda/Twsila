@@ -52,9 +52,6 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private FirebaseUser mUser;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -96,14 +93,14 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         spinner.setAdapter(adapter);
 
         //spinner listener
-          spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 Toast.makeText(adapterView.getContext(),
                         "Your selected category is : " + adapterView.getItemAtPosition(i).toString(),
                         Toast.LENGTH_SHORT).show();
-                category=adapterView.getItemAtPosition(i).toString();
+                category = adapterView.getItemAtPosition(i).toString();
             }
 
             @Override
@@ -135,65 +132,65 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 
         postButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               String postContent = writePostEditText.getText().toString();
-                String str_nofacceptance=NumberOfAcceptance.getText().toString();
+                String postContent = writePostEditText.getText().toString();
+                String str_nofacceptance = NumberOfAcceptance.getText().toString();
                 int nofAcceptance;
 
                 //get current Date and time
-                Date date=new Date();
+                Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm EEE dd/MM");
-                String mycurrentDate=dateFormat.format(date);
+                String mycurrentDate = dateFormat.format(date);
 
                 //check number of acceptanc != empty
-                if(!str_nofacceptance.isEmpty()){
+                if (!str_nofacceptance.isEmpty()) {
                     nofAcceptance = Integer.parseInt(str_nofacceptance);
+                } else {
+                    nofAcceptance = 0;
                 }
-                else{nofAcceptance=0;}
 
-                if(isLocationEnabled(getBaseContext())) {
+                if (isLocationEnabled(getBaseContext())) {
                     // if nunber of acceptance =0 and the category is not A3lanat so the user must enter
                     // valid number.
-                    if(nofAcceptance==0 && !category.equals("A3lanat")){
-                        Toast.makeText(getBaseContext(),"You Have To set Number of acceptance Greater Than 0",Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        if(nofAcceptance==0){nofAcceptance=-1;}
-                    PostDataClass newPost = new PostDataClass(postContent, nofAcceptance, category,
-                            R.drawable.anonymous,mycurrentDate, true, R.drawable.ic_local_play_black_24dp, mUser.getUid(), mUser.getDisplayName());
-                    FirebaseHandler.writePostToFirebase(newPost, geGeoLocationObject());
-                        Toast.makeText(getBaseContext(),"DONE -_-",Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(getBaseContext(),MainActivity.class);
+                    if (nofAcceptance == 0 && !category.equals("A3lanat")) {
+                        Toast.makeText(getBaseContext(), "You Have To set Number of acceptance Greater Than 0", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (nofAcceptance == 0) {
+                            nofAcceptance = -1;
+                        }
+                        PostDataClass newPost = new PostDataClass(postContent, nofAcceptance, category,
+                                R.drawable.anonymous, mycurrentDate, true, R.drawable.ic_local_play_black_24dp, mUser.getUid(), mUser.getDisplayName());
+                        FirebaseHandler.writePostToFirebase(newPost, geGeoLocationObject());
+                        Toast.makeText(getBaseContext(), "DONE -_-", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getBaseContext(), MainActivity.class);
                         startActivity(i);
 
                     }
 
 
-                }
-                else{
-                    Toast.makeText(getBaseContext(),"You Have To Enable GPS",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "You Have To Enable GPS", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
 
 
-
     }
 
     public GeoLocation geGeoLocationObject() {
 
-        double latitude= mLastLocation.getLatitude();
-        double longitude= mLastLocation.getLongitude();
-        Log.v("POST",String.valueOf(mLastLocation.getLatitude())) ;
+        double latitude = mLastLocation.getLatitude();
+        double longitude = mLastLocation.getLongitude();
+        Log.v("POST", String.valueOf(mLastLocation.getLatitude()));
 
-        return new GeoLocation(latitude,longitude);
+        return new GeoLocation(latitude, longitude);
     }
 
     @Override
     public void onConnected(Bundle bundle) {
 
         // permission check.
-       if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -203,9 +200,9 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-          mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-            Log.v("POST",String.valueOf(mLastLocation.getLatitude())) ;
+            Log.v("POST", String.valueOf(mLastLocation.getLatitude()));
         }
 
     }
@@ -231,12 +228,11 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     }
 
 
-
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
         String locationProviders;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             try {
                 locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
 
@@ -247,14 +243,13 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 
             return locationMode != Settings.Secure.LOCATION_MODE_OFF;
 
-        }else{
+        } else {
             locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
             return !TextUtils.isEmpty(locationProviders);
         }
 
 
     }
-
 
 
 }
