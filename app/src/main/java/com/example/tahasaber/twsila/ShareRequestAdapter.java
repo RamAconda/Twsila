@@ -51,6 +51,7 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
             public void onClick(View v) {
                 ShareRequestHandler srh=new ShareRequestHandler();
                 srh.addToPost_Chat(rdc.get(position).postId,rdc.get(position).requesterId);
+                srh.deleteRequest(rdc.get(position).postId,rdc.get(position).requesterId);
                 //Toast.makeText(mContext,,Toast.LENGTH_SHORT).show();
 
 
@@ -60,6 +61,8 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
         holder.rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ShareRequestHandler srh=new ShareRequestHandler();
+                srh.deleteRequest(rdc.get(position).postId,rdc.get(position).requesterId);
 
             }
         });

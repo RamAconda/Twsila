@@ -86,15 +86,6 @@ public class ShareRequestsFragment extends Fragment {
                             +"want to share you in this post"+
                             requests.get(i).getRequesterName());}
 
-
-
-                ////ACCEPT OR REJECT TO DELETE FROM FIREBASE
-                         /*  DatabaseReference myRefToDelt=database.getReference().child("share_requests").child("20130208")
-                                    .child(requests.get(i).postId+requests.get(i).requesterId);
-                            myRefToDelt.removeValue();
-
-                        }*/
-
             }
 
             @Override
