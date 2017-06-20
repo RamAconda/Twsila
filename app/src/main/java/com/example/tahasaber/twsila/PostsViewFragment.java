@@ -1,26 +1,13 @@
 package com.example.tahasaber.twsila;
 
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,17 +20,6 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationServices.*;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PostsViewFragment extends Fragment implements PostsLocationConnector{
     private static final int PERMISSION_RESOLVER_CODE = 1;
@@ -252,13 +227,14 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
 
         @Override
         protected PostDataClass doInBackground(DatabaseReference... postsRef) {
-            for(DatabaseReference postRef : postsRef){
+           for(DatabaseReference postRef : postsRef){
                 postRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d("Anaconda", "in fragment onKeyEntered onDataChange function");
                         //adding the post to the array.
                         newPost = dataSnapshot.getValue(PostDataClass.class);
+                     //   Log.v("geeeeeeeeeeeeeeda",newPost.getPost_body()+"");
                     }
 
                     @Override
@@ -268,8 +244,9 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
                 });
 
             }
-            while(newPost == null){
+          while(newPost == null){
                 //waiting for retreiving the post
+            //  Log.v("null","nuuuuuuul");
             }
             return newPost;
         }

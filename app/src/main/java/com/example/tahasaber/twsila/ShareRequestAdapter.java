@@ -2,17 +2,14 @@ package com.example.tahasaber.twsila;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by TahaSaber on 6/12/2017.
@@ -21,8 +18,10 @@ import java.util.List;
 public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapter.ShareRequestViewHolder> {
 
     ArrayList<RequestItemData> requests;
+    static ArrayList<RequestDataClass> rdc=new ArrayList<RequestDataClass>();
     Context mContext;
 
+    public ShareRequestAdapter(){}
     public ShareRequestAdapter(ArrayList<RequestItemData> requests, Context mContext) {
         this.requests = requests;
         this.mContext = mContext;
@@ -39,7 +38,7 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
     }
 
     @Override
-    public void onBindViewHolder(ShareRequestViewHolder holder, int position) {
+    public void onBindViewHolder(ShareRequestViewHolder holder, final int position) {
 
         final String requesterName = requests.get(position).getRequesterName();
         final String postBody = requests.get(position).getPostBody();
@@ -50,6 +49,10 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
         holder.acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ShareRequestHandler srh=new ShareRequestHandler();
+                srh.addToPost_Chat(rdc.get(position).postId,rdc.get(position).requesterId);
+                //Toast.makeText(mContext,,Toast.LENGTH_SHORT).show();
+
 
             }
         });
@@ -84,6 +87,11 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
 
 
         }
+    }
+    public void setrequesterid(ArrayList<RequestDataClass> reqs){
+        Log.v("ddddddddddddddddd",reqs.get(0).requesterId);
+        this.rdc=reqs;
+
     }
 
 

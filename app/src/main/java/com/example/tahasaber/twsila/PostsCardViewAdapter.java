@@ -16,7 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,10 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     ArrayList<PostDataClass> PostDataClasses;
     Context mcContext;
     ShareRequestHandler shareRequestHandler;
+    private FirebaseUser mUser;
+
+
+
 
     //changed to be dynamic adding and removing posts to the ArrayList
     //so I changed the regular array to ArrayList.
@@ -55,7 +60,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
         final String postId = PostDataClasses.get(i).getPost_id();
         final String publisherId = PostDataClasses.get(i).getUser_id();
-        final int myId = 20130155;
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         postViewHolder.post_body.setText(PostDataClasses.get(i).getPost_body());
         postViewHolder.post_publisher.setText(PostDataClasses.get(i).getPost_puplisher());
         postViewHolder.post_date.setText(PostDataClasses.get(i).getPost_date());
@@ -66,7 +71,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
         postViewHolder.join_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 shareRequestHandler = new ShareRequestHandler();
-                shareRequestHandler.sendShareRequest(publisherId, postId, myId);
+                shareRequestHandler.sendShareRequest(publisherId, postId,mUser.getUid());
                 Toast.makeText(mcContext,"Request has sent successfully", Toast.LENGTH_LONG).show();
 
 
