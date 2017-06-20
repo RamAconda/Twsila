@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
+import static android.media.CamcorderProfile.get;
+
 /**
  * Created by mohamed on 06/02/17.
  */
@@ -32,8 +34,6 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     Context mcContext;
     ShareRequestHandler shareRequestHandler;
     private FirebaseUser mUser;
-
-
 
 
     //changed to be dynamic adding and removing posts to the ArrayList
@@ -60,6 +60,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
         final String postId = PostDataClasses.get(i).getPost_id();
         final String publisherId = PostDataClasses.get(i).getUser_id();
+        final int NoOfAcceptance = PostDataClasses.get(i).getacceptance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         postViewHolder.post_body.setText(PostDataClasses.get(i).getPost_body());
         postViewHolder.post_publisher.setText(PostDataClasses.get(i).getPost_puplisher());
@@ -70,9 +71,16 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
 
         postViewHolder.join_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                shareRequestHandler = new ShareRequestHandler();
-                shareRequestHandler.sendShareRequest(publisherId, postId,mUser.getUid());
-                Toast.makeText(mcContext,"Request has sent successfully", Toast.LENGTH_LONG).show();
+                if (publisherId.equals(mUser.getUid())) {
+                    Toast.makeText(mcContext, "You can't share your post", Toast.LENGTH_LONG).show();
+                } else if (NoOfAcceptance <= 0) {
+                    Toast.makeText(mcContext, "Sorry! This post is closed", Toast.LENGTH_LONG).show();
+                } else {
+                    shareRequestHandler = new ShareRequestHandler();
+                    shareRequestHandler.sendShareRequest(publisherId, postId, mUser.getUid());
+                    Toast.makeText(mcContext, "Request has sent successfully", Toast.LENGTH_LONG).show();
+
+                }
 
 
             }
