@@ -2,7 +2,6 @@ package com.example.tahasaber.twsila;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +16,12 @@ import java.util.ArrayList;
 
 public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapter.ShareRequestViewHolder> {
 
-    ArrayList<RequestItemData> requests;
+    ArrayList<RequestDataClass> requests;
     static ArrayList<RequestDataClass> rdc=new ArrayList<RequestDataClass>();
     Context mContext;
 
     public ShareRequestAdapter(){}
-    public ShareRequestAdapter(ArrayList<RequestItemData> requests, Context mContext) {
+    public ShareRequestAdapter(ArrayList<RequestDataClass> requests, Context mContext) {
         this.requests = requests;
         this.mContext = mContext;
     }
@@ -40,9 +39,10 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
     @Override
     public void onBindViewHolder(ShareRequestViewHolder holder, final int position) {
 
-        final String requesterName = requests.get(position).getRequesterName();
-        final String postBody = requests.get(position).getPostBody();
-        final int status = requests.get(position).getStatus();
+        final String requesterName = requests.get(position).requesterName;
+        final String postBody = requests.get(position).postBody;
+        final String postId =requests.get(position).postId;
+        final String requesterId =requests.get(position).requesterId;
         holder.requesterName.setText(requesterName);
         holder.postBody.setText(postBody);
 
@@ -50,8 +50,10 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
             @Override
             public void onClick(View v) {
                 ShareRequestHandler srh=new ShareRequestHandler();
-                srh.addToPost_Chat(rdc.get(position).postId,rdc.get(position).requesterId);
-                srh.deleteRequest(rdc.get(position).postId,rdc.get(position).requesterId);
+                srh.addUserToPostChat(postId,requesterId);
+                srh.deleteRequest(postId,requesterId);
+
+
                 //Toast.makeText(mContext,,Toast.LENGTH_SHORT).show();
 
 
@@ -62,7 +64,7 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
             @Override
             public void onClick(View v) {
                 ShareRequestHandler srh=new ShareRequestHandler();
-                srh.deleteRequest(rdc.get(position).postId,rdc.get(position).requesterId);
+                srh.deleteRequest(postId,requesterId);
 
             }
         });
@@ -91,11 +93,11 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
 
         }
     }
-    public void setrequesterid(ArrayList<RequestDataClass> reqs){
+   /* public void setrequesterid(ArrayList<RequestDataClass> reqs){
         Log.v("ddddddddddddddddd",reqs.get(0).requesterId);
         this.rdc=reqs;
 
-    }
+    }*/
 
 
 }

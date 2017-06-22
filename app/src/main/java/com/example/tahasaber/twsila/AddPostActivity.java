@@ -159,13 +159,13 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                         if(nofAcceptance==0){nofAcceptance=-1;}
                     PostDataClass newPost = new PostDataClass(postContent, nofAcceptance, category,
                             R.drawable.anonymous,mycurrentDate, true, R.drawable.ic_local_play_black_24dp, mUser.getUid(), mUser.getDisplayName());
-                    FirebaseHandler.writePostToFirebase(newPost, geGeoLocationObject());
+                        FirebaseHandler.writePostToFirebase(newPost, geGeoLocationObject());
+
                         Toast.makeText(getBaseContext(),"DONE -_-",Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getBaseContext(),MainActivity.class);
                         startActivity(i);
 
                     }
-
 
                 }
                 else{

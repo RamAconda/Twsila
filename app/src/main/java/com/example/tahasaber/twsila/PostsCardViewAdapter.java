@@ -59,6 +59,8 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
         final String postId = PostDataClasses.get(i).getPost_id();
         final String publisherId = PostDataClasses.get(i).getUser_id();
+        final String postBody=PostDataClasses.get(i).getPost_body();
+
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         postViewHolder.post_body.setText(PostDataClasses.get(i).getPost_body());
         postViewHolder.post_publisher.setText(PostDataClasses.get(i).getPost_puplisher());
@@ -70,7 +72,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
         postViewHolder.join_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 shareRequestHandler = new ShareRequestHandler();
-                shareRequestHandler.sendShareRequest(publisherId, postId,mUser.getUid());
+                shareRequestHandler.sendShareRequest(publisherId, postId,mUser.getUid(),postBody,mUser.getDisplayName());
                 Toast.makeText(mcContext,"Request has sent successfully", Toast.LENGTH_LONG).show();
 
 

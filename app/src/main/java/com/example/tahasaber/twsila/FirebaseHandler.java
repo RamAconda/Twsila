@@ -2,6 +2,8 @@ package com.example.tahasaber.twsila;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -14,6 +16,7 @@ public class FirebaseHandler {
 
     private static DatabaseReference ref = FirebaseDatabase.getInstance().getReference("geofire");
     private static GeoFire geoFire = new GeoFire(ref);
+    private static FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
     public static void writePostToFirebase(PostDataClass post,GeoLocation geoLocation){
@@ -24,6 +27,10 @@ public class FirebaseHandler {
         DatabaseReference myRef = database.getReference().child("posts");
 
         String myPostKey = myRef.push().getKey();
+
+        //write user id to post node in chat_posts node
+
+        ShareRequestHandler.addUserToPostChat(myPostKey,mUser.getUid());
 
         //set post id with the firebase key
         post.setPost_id(myPostKey);
