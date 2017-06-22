@@ -18,10 +18,12 @@ import java.util.ArrayList;
 public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapter.ShareRequestViewHolder> {
 
     ArrayList<RequestItemData> requests;
-    static ArrayList<RequestDataClass> rdc=new ArrayList<RequestDataClass>();
+    static ArrayList<RequestDataClass> rdc = new ArrayList<RequestDataClass>();
     Context mContext;
 
-    public ShareRequestAdapter(){}
+    public ShareRequestAdapter() {
+    }
+
     public ShareRequestAdapter(ArrayList<RequestItemData> requests, Context mContext) {
         this.requests = requests;
         this.mContext = mContext;
@@ -49,9 +51,9 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
         holder.acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShareRequestHandler srh=new ShareRequestHandler();
-                srh.addToPost_Chat(rdc.get(position).postId,rdc.get(position).requesterId);
-                srh.deleteRequest(rdc.get(position).postId,rdc.get(position).requesterId);
+                ShareRequestHandler srh = new ShareRequestHandler();
+                srh.addToPost_Chat(rdc.get(position).postId, rdc.get(position).requesterId);
+                srh.deleteRequest(rdc.get(position).postId, rdc.get(position).requesterId);
                 //Toast.makeText(mContext,,Toast.LENGTH_SHORT).show();
 
 
@@ -61,8 +63,8 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
         holder.rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShareRequestHandler srh=new ShareRequestHandler();
-                srh.deleteRequest(rdc.get(position).postId,rdc.get(position).requesterId);
+                ShareRequestHandler srh = new ShareRequestHandler();
+                srh.deleteRequest(rdc.get(position).postId, rdc.get(position).requesterId);
 
             }
         });
@@ -91,9 +93,10 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
 
         }
     }
-    public void setrequesterid(ArrayList<RequestDataClass> reqs){
-        Log.v("ddddddddddddddddd",reqs.get(0).requesterId);
-        this.rdc=reqs;
+
+    public void setrequesterid(ArrayList<RequestDataClass> reqs) {
+        Log.v("ddddddddddddddddd", reqs.get(0).requesterId);
+        this.rdc = reqs;
 
     }
 

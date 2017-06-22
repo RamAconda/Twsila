@@ -90,8 +90,27 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
             public void onClick(View v) {
 
 
+                // check if he is authorized
+
+
+
                 shareRequestHandler =new ShareRequestHandler();
                 shareRequestHandler.write_messege("hello",mUser.getUid(),postId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                /* ContentValues values = new ContentValues();
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, 001);
                 values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);

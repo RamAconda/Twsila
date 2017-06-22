@@ -6,14 +6,15 @@ package com.example.tahasaber.twsila;
 
 public class RequestDataClass {
 
-   public String postId;
+    public String postId;
     public String requesterId;
 
-    public RequestDataClass(){}
+    public RequestDataClass() {
+    }
 
-    public RequestDataClass(String postId, String requesterId){
-        this.postId=postId;
-        this.requesterId=requesterId;
+    public RequestDataClass(String postId, String requesterId) {
+        this.postId = postId;
+        this.requesterId = requesterId;
     }
 
 }
