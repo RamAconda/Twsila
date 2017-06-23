@@ -30,18 +30,10 @@ public class ShareRequestsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<RequestItemData> requests;
-    public ArrayList<RequestDataClass> reData=new ArrayList<RequestDataClass>();
-    private FirebaseDatabase database=FirebaseDatabase.getInstance();
+    private ArrayList<RequestDataClass> requests;
+    public ArrayList<RequestDataClass> reData = new ArrayList<RequestDataClass>();
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseUser mUser;
-
-
-    RequestItemData obj1 = new RequestItemData("Taha Saber", "السلام عليكم");
-    RequestItemData obj2 = new RequestItemData("Mohamed Ali","عرض اربع تيشرتات وواحد هدية");
-    RequestItemData obj3 = new RequestItemData("Ahmed Samir", "playing football");
-    RequestItemData obj4 = new RequestItemData("Merna Adel", "where is FCI");
-    RequestItemData obj5 = new RequestItemData("Ali Ahmed", "انا رايح الجيزة حد جاي معايا");
-    RequestItemData obj6 = new RequestItemData("Taha Saber", "where is FCI");
 
 
     @Nullable
@@ -51,8 +43,6 @@ public class ShareRequestsFragment extends Fragment {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
-
-
         requests = new ArrayList<>();
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.share_requests_recycler_view);
@@ -60,38 +50,35 @@ public class ShareRequestsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ShareRequestAdapter(requests, getActivity());
         mRecyclerView.setAdapter(mAdapter);
-        final FirebaseDatabase database=FirebaseDatabase.getInstance();
-        DatabaseReference myRef=database.getReference().child("share_requests").child(mUser.getUid());
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference().child("share_requests").child(mUser.getUid());
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 requests.clear();
-                for(DataSnapshot request:dataSnapshot.getChildren()) {
+                for (DataSnapshot request : dataSnapshot.getChildren()) {
                     RequestDataClass onerequest = request.getValue(RequestDataClass.class);
-                    reData.add(onerequest);
-                    ShareRequestHandler srh=new ShareRequestHandler();
-                    srh.getPostBody(onerequest.postId);
-                    RequestItemData reqItem=new RequestItemData(onerequest.requesterId,srh.postbody);
-                    requests.add(reqItem);
-                    Log.v("megooooooooooooooo", onerequest.requesterId);
+                    requests.add(onerequest);
                 }
-                ShareRequestAdapter srad=new ShareRequestAdapter();
-                srad.rdc=reData;
+
                 mAdapter = new ShareRequestAdapter(requests, getActivity());
                 mRecyclerView.setAdapter(mAdapter);
 
 
-                for(int i=0;i<requests.size();i++){
-                    Log.v("sharerequests",requests.get(i).getPostBody()
-                            +"want to share you in this post"+
-                            requests.get(i).getRequesterName());}
+                for (int i = 0; i < requests.size(); i++) {
+                    Log.v("sharerequests", requests.get(i).requesterName
+                            + "want to share you in this post" +
+                            requests.get(i).postBody);
+                }
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Failed to read value
-                Log.w("Failed to read value.","error");
+                Log.w("Failed to read value.", "error");
             }
         });
 

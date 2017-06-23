@@ -7,14 +7,14 @@
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
     <RelativeLayout
-        android:id="@+id/relative_bar"
+        android:id="@+id/chat_new_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
 
         <TextView
-            android:id="@+id/post_owner_name"
+            android:id="@+id/post_owner_name_in_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -27,10 +27,11 @@
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/text_inchat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/post_owner_name"
+            android:layout_below="@id/post_owner_name_in_chat"
             android:layout_marginRight="5dp"
             android:text="انا في الجيزة ورايح الهرم.."
             android:textColor="#ffffff" />
