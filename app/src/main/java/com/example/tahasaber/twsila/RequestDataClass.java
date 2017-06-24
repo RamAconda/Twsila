@@ -11,7 +11,9 @@ public class RequestDataClass {
     public String requesterName;
     public String postBody;
 
-    public RequestDataClass(){}
+    public RequestDataClass() {
+    }
+
 
     public RequestDataClass(String postId, String requesterId,String requesterName,String postBody){
         this.postId=postId;

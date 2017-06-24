@@ -2,6 +2,7 @@ package com.example.tahasaber.twsila;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.provider.Contacts;
 import android.provider.ContactsContract;
@@ -17,8 +18,17 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import static android.R.attr.x;
+import static android.media.CamcorderProfile.get;
+import static com.twitter.sdk.android.core.TwitterCore.TAG;
 
 /**
  * Created by mohamed on 06/02/17.
@@ -31,8 +41,6 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     Context mcContext;
     ShareRequestHandler shareRequestHandler;
     private FirebaseUser mUser;
-
-
 
 
     //changed to be dynamic adding and removing posts to the ArrayList
@@ -59,7 +67,12 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
         final String postId = PostDataClasses.get(i).getPost_id();
         final String publisherId = PostDataClasses.get(i).getUser_id();
-        final String postBody=PostDataClasses.get(i).getPost_body();
+
+        final String publisherName = PostDataClasses.get(i).getPost_puplisher();
+
+        final int NoOfAcceptance = PostDataClasses.get(i).getacceptance();
+
+        final String postBody = PostDataClasses.get(i).getPost_body();
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         postViewHolder.post_body.setText(PostDataClasses.get(i).getPost_body());
@@ -71,9 +84,38 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
 
         postViewHolder.join_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                shareRequestHandler = new ShareRequestHandler();
-                shareRequestHandler.sendShareRequest(publisherId, postId,mUser.getUid(),postBody,mUser.getDisplayName());
-                Toast.makeText(mcContext,"Request has sent successfully", Toast.LENGTH_LONG).show();
+
+                if (publisherId.equals(mUser.getUid())) {
+                    Toast.makeText(mcContext, "You are already joined, Start Chat", Toast.LENGTH_LONG).show();
+                } else if (NoOfAcceptance <= 0) {
+                    Toast.makeText(mcContext, "Sorry! This post is closed", Toast.LENGTH_LONG).show();
+                } else {
+
+                    DatabaseReference mDatabase;
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child("posts_chat").child("posts").child(postId).child("users");
+
+
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.hasChild(mUser.getUid())) {
+                                Toast.makeText(mcContext, "You are already joined, Start Chat", Toast.LENGTH_LONG).show();
+
+                            } else {
+                                shareRequestHandler = new ShareRequestHandler();
+                                shareRequestHandler.sendShareRequest(publisherId, postId, mUser.getUid(), postBody, mUser.getDisplayName());
+                                Toast.makeText(mcContext, "Request has sent successfully", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                }
 
 
             }
@@ -84,20 +126,34 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
             public void onClick(View v) {
 
 
-                shareRequestHandler =new ShareRequestHandler();
-                shareRequestHandler.write_messege("hello",mUser.getUid(),postId);
-               /* ContentValues values = new ContentValues();
-                values.put(ContactsContract.Data.RAW_CONTACT_ID, 001);
-                values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-                values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, "1-800-GOOG-411");
-                values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM);
-                values.put(ContactsContract.CommonDataKinds.Phone.LABEL, "Nirav");
-                Uri dataUri = mcContext.getContentResolver().insert(android.provider.ContactsContract.Data.CONTENT_URI, values);*/
-               /* addContact("twsella_ta", "01121818822");
-                Uri uri = Uri.parse("smsto:" + "01121818822");
-                Intent i = new Intent(Intent.ACTION_SENDTO, uri);
-                i.setPackage("com.whatsapp");
-                mcContext.startActivity(Intent.createChooser(i, ""));*/
+                // check if he is authorized
+
+                DatabaseReference mDatabase;
+                mDatabase = FirebaseDatabase.getInstance().getReference().child("posts_chat").child("posts").child(postId).child("users");
+
+
+                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (snapshot.hasChild(mUser.getUid())) {
+
+                            Intent intent = new Intent(mcContext, ChatActivity.class);
+                            intent.putExtra("publisherName", publisherName);
+                            intent.putExtra("postBody", postBody);
+                            intent.putExtra("postId", postId);
+                            mcContext.startActivity(intent);
+
+                        } else {
+
+                            Toast.makeText(mcContext, "Sorry! Join first" , Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
 
             }
@@ -135,22 +191,6 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
             team_counter = (TextView) itemView.findViewById(R.id.counter_id);
 
         }
-    }
-
-    private void addContact(String name, String phone) {
-
-        ContentValues values = new ContentValues();
-        values.put(Contacts.People.NUMBER, phone);
-        values.put(Contacts.People.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM);
-        values.put(Contacts.People.LABEL, name);
-        values.put(Contacts.People.NAME, name);
-        Uri dataUri = mcContext.getContentResolver().insert(Contacts.People.CONTENT_URI, values);
-        Uri updateUri = Uri.withAppendedPath(dataUri, Contacts.People.Phones.CONTENT_DIRECTORY);
-        values.clear();
-        values.put(Contacts.People.Phones.TYPE, Contacts.People.TYPE_MOBILE);
-        values.put(Contacts.People.NUMBER, phone);
-        updateUri = mcContext.getContentResolver().insert(updateUri, values);
-        Log.d("CONTACT", "" + updateUri);
     }
 
 

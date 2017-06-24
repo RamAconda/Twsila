@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Final GP.iml" filepath="$PROJECT_DIR$/Final GP.iml" />
       <module fileurl="file://$PROJECT_DIR$/GGP.iml" filepath="$PROJECT_DIR$/GGP.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

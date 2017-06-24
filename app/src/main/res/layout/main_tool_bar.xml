@@ -53,7 +53,7 @@
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@id/noti_favourits"
             android:background="#34AEE8"
-            android:src="@drawable/ic_home_black_24dp" />
+            android:src="@drawable/ic_person_add_black_24dp" />
 
 
     </RelativeLayout>

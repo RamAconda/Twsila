@@ -31,10 +31,9 @@ public class ShareRequestsFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<RequestDataClass> requests;
-    public ArrayList<RequestDataClass> reData=new ArrayList<RequestDataClass>();
-    private FirebaseDatabase database=FirebaseDatabase.getInstance();
+    public ArrayList<RequestDataClass> reData = new ArrayList<RequestDataClass>();
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseUser mUser;
-
 
 
     @Nullable
@@ -42,8 +41,6 @@ public class ShareRequestsFragment extends Fragment {
         Toast.makeText(getActivity(), "onCreateView", Toast.LENGTH_LONG).show();
         View rootView = inflater.inflate(R.layout.fragment_share_requests, container, false);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-
-
 
 
         requests = new ArrayList<>();
@@ -54,14 +51,14 @@ public class ShareRequestsFragment extends Fragment {
         mAdapter = new ShareRequestAdapter(requests, getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
-        final FirebaseDatabase database=FirebaseDatabase.getInstance();
-        DatabaseReference myRef=database.getReference().child("share_requests").child(mUser.getUid());
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference().child("share_requests").child(mUser.getUid());
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 requests.clear();
-                for(DataSnapshot request:dataSnapshot.getChildren()) {
+                for (DataSnapshot request : dataSnapshot.getChildren()) {
                     RequestDataClass onerequest = request.getValue(RequestDataClass.class);
                     requests.add(onerequest);
                 }
@@ -70,17 +67,18 @@ public class ShareRequestsFragment extends Fragment {
                 mRecyclerView.setAdapter(mAdapter);
 
 
-                for(int i=0;i<requests.size();i++){
-                    Log.v("sharerequests",requests.get(i).requesterName
-                            +"want to share you in this post"+
-                            requests.get(i).postBody);}
+                for (int i = 0; i < requests.size(); i++) {
+                    Log.v("sharerequests", requests.get(i).requesterName
+                            + "want to share you in this post" +
+                            requests.get(i).postBody);
+                }
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Failed to read value
-                Log.w("Failed to read value.","error");
+                Log.w("Failed to read value.", "error");
             }
         });
 

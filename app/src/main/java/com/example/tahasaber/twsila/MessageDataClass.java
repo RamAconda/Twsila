@@ -5,14 +5,33 @@ package com.example.tahasaber.twsila;
  */
 
 public class MessageDataClass {
-    public String msg_body;
-    public String msg_publisher;
+    private String msgBody;
+    private String msgPublisher;
 
-    public MessageDataClass(){}
+    public MessageDataClass() {
+    }
 
-    public MessageDataClass(String msg_body,String msg_publisher){
-        this.msg_body=msg_body;
-        this.msg_publisher=msg_publisher;
+    public MessageDataClass(String msgBody, String msgPublisher) {
+        this.msgBody = msgBody;
+        this.msgPublisher = msgPublisher;
+
+    }
+
+    public void setMsgBody(String msgBody) {
+        this.msgBody = msgBody;
+    }
+
+    public void setMsgPublisher(String msgPublisher) {
+        this.msgPublisher = msgPublisher;
+    }
+
+
+    public String getMsgBody() {
+        return msgBody;
+    }
+
+    public String getMsgPublisher() {
+        return msgPublisher;
     }
 
 }
