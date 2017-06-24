@@ -52,10 +52,7 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
                 ShareRequestHandler srh=new ShareRequestHandler();
                 srh.addUserToPostChat(postId,requesterId);
                 srh.deleteRequest(postId,requesterId);
-
-
-                //Toast.makeText(mContext,,Toast.LENGTH_SHORT).show();
-
+                srh.getNumOfAcc(postId);
 
             }
         });

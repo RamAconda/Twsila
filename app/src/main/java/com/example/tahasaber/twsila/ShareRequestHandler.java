@@ -1,9 +1,14 @@
 package com.example.tahasaber.twsila;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by TahaSaber on 4/20/2017.
@@ -50,6 +55,35 @@ public class ShareRequestHandler {
                 .child(postId+requesterId);
         myRefToDelt.removeValue();
 
+    }
+
+    public void getNumOfAcc(final String postId){
+
+        DatabaseReference myRefToupdate=database.getReference().child("posts")
+                .child(postId);//.child("acceptance")
+        myRefToupdate.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                   PostDataClass postToUpdate=dataSnapshot.getValue(PostDataClass.class);
+
+                    updateNOfAcc(postId,postToUpdate.getacceptance());
+
+                    Log.v("pppppppppoooooooooo",postToUpdate.getacceptance()+"");
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.v("TagSrh","error_oncanclled");
+
+            }
+        });
+
+    }
+    public void updateNOfAcc(String postId,int oldValue){
+        DatabaseReference myRefToupdate=database.getReference().child("posts")
+                .child(postId).child("acceptance");
+        myRefToupdate.setValue(oldValue-1);
     }
 
 
