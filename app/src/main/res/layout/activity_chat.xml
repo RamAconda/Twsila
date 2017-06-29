@@ -14,14 +14,11 @@
         android:layout_height="match_parent"
         android:padding="5dp">
 
-        <ListView
-            android:id="@+id/messageListView"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/message_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/linearLayout"
-            android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll"
-            tools:listitem="@layout/item_message" />
+            android:layout_centerInParent="true" />
 
 
         <LinearLayout
@@ -32,6 +29,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
+
+
+            <solid android:color="#FFFFFF"/>
 
 
             <EditText

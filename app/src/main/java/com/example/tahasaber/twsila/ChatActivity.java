@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -68,6 +70,10 @@ public class ChatActivity extends Activity {
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mChatPhotosStorageReference;
 
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<MessageDataClass> friendlyMessages;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,14 +113,18 @@ public class ChatActivity extends Activity {
 
         // Initialize references to views
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mMessageListView = (ListView) findViewById(R.id.messageListView);
         mMessageEditText = (EditText) findViewById(R.id.messageEditText);
         mSendButton = (Button) findViewById(R.id.sendButton);
+        mRecyclerView = (RecyclerView)findViewById(R.id.message_view);
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+
 
         // Initialize message ListView and its adapter
-        List<MessageDataClass> friendlyMessages = new ArrayList<>();
-        chatAdapter = new ChatAdapter(this, R.layout.item_message, friendlyMessages);
-        mMessageListView.setAdapter(chatAdapter);
+        friendlyMessages= new ArrayList<>();
+        mAdapter = new ChatAdapter(friendlyMessages, this);
+        mRecyclerView.setAdapter(mAdapter);
 
         // Initialize progress bar
         mProgressBar.setVisibility(ProgressBar.INVISIBLE);
@@ -167,7 +177,9 @@ public class ChatActivity extends Activity {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     MessageDataClass friendlyMessage = dataSnapshot.getValue(MessageDataClass.class);
-                    chatAdapter.add(friendlyMessage);
+                    friendlyMessages.add(friendlyMessage);
+                    mAdapter = new ChatAdapter(friendlyMessages, getApplicationContext());
+                    mRecyclerView.setAdapter(mAdapter);
                 }
 
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {

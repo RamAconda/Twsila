@@ -3,9 +3,12 @@ package com.example.tahasaber.twsila;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,50 +19,79 @@ import com.example.tahasaber.twsila.MessageDataClass;
 import com.example.tahasaber.twsila.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ChatAdapter extends ArrayAdapter<MessageDataClass> {
-    public ChatAdapter(Context context, int resource, List<MessageDataClass> objects) {
-        super(context, resource, objects);
+import static java.security.AccessController.getContext;
+
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
+
+    ArrayList<MessageDataClass> messages;
+    Context mContext;
+
+    public ChatAdapter() {
+    }
+
+
+    @Override
+    public ChatAdapter.ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false);
+        ChatAdapter.ChatViewHolder chatAdapter = new ChatAdapter.ChatViewHolder(v);
+
+        return chatAdapter;
+    }
+
+    public ChatAdapter(ArrayList<MessageDataClass> messages, Context mContext) {
+        this.messages = messages;
+        this.mContext = mContext;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_message, parent, false);
-        }
+    public void onBindViewHolder(ChatAdapter.ChatViewHolder holder, final int position) {
 
-        TextView messageTextView = (TextView) convertView.findViewById(R.id.messageTextView);
-        TextView authorTextView = (TextView) convertView.findViewById(R.id.nameTextView);
-
-        MessageDataClass message = getItem(position);
-
-
-        messageTextView.setVisibility(View.VISIBLE);
-
-        if(message.getMsgPublisher().equals(FirebaseAuth.getInstance().getCurrentUser().getDisplayName())){
+        final String messageBodyText = messages.get(position).getMsgBody();
+        final String messageSenderName = messages.get(position).getMsgPublisher();
+       /* if (messages.get(position).getMsgPublisher().equals(FirebaseAuth.getInstance().getCurrentUser().getDisplayName())) {
             int colorValue = Color.parseColor("#34AEE8");
             int textColor = Color.parseColor("#ffffff");
-            messageTextView.setBackgroundColor(colorValue);
-            messageTextView.setTextColor(textColor);
-            authorTextView.setBackgroundColor(colorValue);
-            authorTextView.setTextColor(textColor);
+            holder.messageBody.setBackgroundColor(colorValue);
+            holder.messageBody.setTextColor(textColor);
+            holder.messageBody.setBackgroundColor(colorValue);
+            holder.messageBody.setTextColor(textColor);
 
-        }
-
-        else {
+        } else {
             int colorValue = Color.parseColor("#E0E0E0");
             int textColor = Color.parseColor("#000000");
-            messageTextView.setBackgroundColor(colorValue);
-            authorTextView.setBackgroundColor(colorValue);
-            messageTextView.setTextColor(textColor);
-            authorTextView.setTextColor(textColor);
+            holder.messageBody.setBackgroundColor(colorValue);
+            holder.messageBody.setBackgroundColor(colorValue);
+            holder.messageBody.setTextColor(textColor);
+            holder.messageBody.setTextColor(textColor);
 
+
+        }*/
+        holder.messageBody.setText(messageBodyText);
+        holder.senderName.setText(messageSenderName);
+
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return messages.size();
+    }
+
+
+    public static class ChatViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView messageBody, senderName;
+
+        public ChatViewHolder(View itemView) {
+            super(itemView);
+
+            messageBody = (TextView) itemView.findViewById(R.id.messageTextView);
+            senderName = (TextView) itemView.findViewById(R.id.nameTextView);
 
         }
-        messageTextView.setText(message.getMsgBody());
-        authorTextView.setText(message.getMsgPublisher());
-
-        return convertView;
     }
 }

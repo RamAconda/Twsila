@@ -1,6 +1,7 @@
 package com.example.tahasaber.twsila;
 
-import android.support.v4.app.Fragment;
+
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ public class NotificationActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.notification_fragment, container, false);
+        ((MainActivity) getActivity()).setActionBarTitle("Notifications");
+
 
         listView = (ListView) rootView.findViewById(R.id.noti_list);
         adapter = new NotificationListAdapter(getActivity(), R.layout.notification_item);
@@ -31,5 +34,14 @@ public class NotificationActivity extends Fragment {
             i++;
         }
         return rootView;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        //Toast.makeText(getActivity(), "share on stop", Toast.LENGTH_LONG).show();
+        ((MainActivity) getActivity()).setActionBarTitle("Twsila");
+
     }
 }

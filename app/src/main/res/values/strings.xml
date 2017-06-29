@@ -15,7 +15,6 @@
     <string name="disaster"> Offers </string>
     <string name="rent"> Egarat </string>
     <string name="advertisement"> A3lanat </string>
-    <string name="others">Others</string>
     <string name="usersToSharePost">number of users to share !</string>
     <string name="send_button_label">Send</string>
 
@@ -23,6 +22,7 @@
         <item>Erkab M3ana</item>
         <item>Sa3et Kora</item>
         <item>Specialist</item>
+        <item>Offers</item>
         <item>Egarat</item>
         <item>A3lanat</item>
         <item>Others</item>
