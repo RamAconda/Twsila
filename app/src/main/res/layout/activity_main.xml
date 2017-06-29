@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".ActivityClasses.MainActivity">
 
 
     <LinearLayout
@@ -15,7 +15,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/main_tool_bar" />
+            layout="@layout/partial_main_tool_bar" />
 
 
         <FrameLayout xmlns:tools="http://schemas.android.com/tools"
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/header"
+        app:headerLayout="@layout/partial_header"
         app:menu="@menu/n_menu" />
 
 

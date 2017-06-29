@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
+
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_publisher_name"
+        android:text=" TahaSaber "
+        android:textSize="18dp"
+        android:textColor="#607D8B" />
+
+    <TextView
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="Accept"
+        android:textColor="#607D8B"
+        android:layout_toRightOf="@id/post_publisher_name" />
+
+
+    <TextView
+        android:id="@+id/want"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="Your Request on Post"
+        android:textColor="#607D8B"
+        android:layout_toRightOf="@id/type" />
+
+
+
+    <TextView
+        android:id="@+id/post_body_notif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="post"
+        android:textColor="#607D8B"
+        android:layout_margin="16dp"
+        android:layout_below="@id/post_publisher_name" />
+
+
+
+
+</RelativeLayout>

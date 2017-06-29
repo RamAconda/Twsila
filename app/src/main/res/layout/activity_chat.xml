@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/post_action_id"
-        layout="@layout/chat_bar" />
+        layout="@layout/partial_chat_bar" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
