@@ -28,7 +28,7 @@
             android:title="@string/specialist" />
 
         <item
-            android:id="@+id/cata"
+            android:id="@+id/offers"
             android:checkable="true"
             android:checked="false"
             android:icon="@drawable/fire"

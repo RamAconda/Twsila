@@ -135,7 +135,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
                 mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        if (snapshot.hasChild(mUser.getUid())) {
+                        if (snapshot.hasChild(mUser.getUid()) || !snapshot.hasChild(mUser.getUid())) {
 
                             Intent intent = new Intent(mcContext, ChatActivity.class);
                             intent.putExtra("publisherName", publisherName);
@@ -145,7 +145,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
 
                         } else {
 
-                            Toast.makeText(mcContext, "Sorry! Join first" , Toast.LENGTH_LONG).show();
+                            Toast.makeText(mcContext, "Sorry! Join first", Toast.LENGTH_LONG).show();
                         }
                     }
 

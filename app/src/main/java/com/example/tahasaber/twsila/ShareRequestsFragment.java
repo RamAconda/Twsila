@@ -2,13 +2,14 @@ package com.example.tahasaber.twsila;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
  */
 
 
-public class ShareRequestsFragment extends Fragment {
+public class ShareRequestsFragment extends android.app.Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -36,11 +37,21 @@ public class ShareRequestsFragment extends Fragment {
     private FirebaseUser mUser;
 
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        //Toast.makeText(getActivity(), "share on stop", Toast.LENGTH_LONG).show();
+        ((MainActivity) getActivity()).setActionBarTitle("Twsila");
+
+    }
+
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Toast.makeText(getActivity(), "onCreateView", Toast.LENGTH_LONG).show();
         View rootView = inflater.inflate(R.layout.fragment_share_requests, container, false);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+        ((MainActivity) getActivity()).setActionBarTitle("Requests");
 
 
         requests = new ArrayList<>();
@@ -80,7 +91,11 @@ public class ShareRequestsFragment extends Fragment {
                 // Failed to read value
                 Log.w("Failed to read value.", "error");
             }
+
+
         });
+
+
 
 
         return rootView;

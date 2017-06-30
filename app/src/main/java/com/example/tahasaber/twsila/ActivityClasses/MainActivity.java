@@ -1,6 +1,7 @@
 package com.example.tahasaber.twsila.ActivityClasses;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -9,8 +10,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,12 +20,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tahasaber.twsila.DataClasses.UserDataClass;
 import com.example.tahasaber.twsila.FragmentClasses.FavouritCategoriesFragment;
 import com.example.tahasaber.twsila.FragmentClasses.PostsViewFragment;
-import com.example.tahasaber.twsila.FragmentClasses.ShareRequestsFragment;
 import com.example.tahasaber.twsila.R;
+import com.example.tahasaber.twsila.FragmentClasses.ShareRequestsFragment;
 import com.example.tahasaber.twsila.UtilityClasses.PostsLocationConnector;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -51,21 +55,21 @@ import java.util.Arrays;
 //import com.google.android.gms.appindexing.AppIndex;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks
-        , GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        , GoogleApiClient.OnConnectionFailedListener, LocationListener, NavigationView.OnNavigationItemSelectedListener {
 
     private PostsViewFragment postsFragment;
     private PostsLocationConnector postsLocationConnector;
 
     private Context context = this;
+    private TextView appName;
 
     private FusedLocationProviderApi locationProvider = LocationServices.FusedLocationApi;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
+    ActionBarDrawerToggle toggle;
 
     private static final int RC_SIGN_IN = 1;
 
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
     Toolbar toolbar;
 
     //firebase auth variable
@@ -73,18 +77,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener authStateListener;
     private DatabaseReference usersRef;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("Anaconda", "in activity create function");
         setContentView(R.layout.activity_main);
+        appName = (TextView) findViewById(R.id.app_name);
 
         //initializing firebase auth and user.
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
 
         initializeLocationWork();
         enableLocation();
@@ -94,16 +99,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         //begin the posts fragment logic(code)
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction().add(R.id.main_frahgment_container, postsFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.main_frahgment_container, postsFragment).commit();
+
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, R.string.open, R.string.close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //moved to the function defineGoogleApiClient
         //client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -113,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 mUser = firebaseAuth.getCurrentUser();
                 if (mUser != null) {
- //                   addUserToDatabaseIfNotThere();
+                    //                   addUserToDatabaseIfNotThere();
                 } else {
                     startActivityForResult(
                             AuthUI.getInstance()
@@ -129,6 +142,69 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("Anaconda", "in activity onOptionsItemSelected function");
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.all_id) {
+            Toast.makeText(getApplicationContext(), "All", Toast.LENGTH_LONG).show();
+            postsFragment.categories("All");
+        }
+        if (id == R.id.car_id) {
+            Toast.makeText(getApplicationContext(), "Erkab M3ana", Toast.LENGTH_LONG).show();
+            postsFragment.categories("Erkab M3ana");
+
+
+        } else if (id == R.id.play_id) {
+            Toast.makeText(getApplicationContext(), "Sa3et Kora", Toast.LENGTH_LONG).show();
+            postsFragment.categories("Sa3et Kora");
+
+        } else if (id == R.id.specialist_id) {
+            Toast.makeText(getApplicationContext(), "Specialist", Toast.LENGTH_LONG).show();
+            postsFragment.categories("Specialist");
+
+        } else if (id == R.id.offers) {
+            Toast.makeText(getApplicationContext(), "Offers", Toast.LENGTH_LONG).show();
+            postsFragment.categories("Offers");
+
+        } else if (id == R.id.rent_id) {
+            Toast.makeText(getApplicationContext(), "Egarat", Toast.LENGTH_LONG).show();
+            postsFragment.categories("Egarat");
+        } else if (id == R.id.adv_id) {
+            Toast.makeText(getApplicationContext(), "A3lanat", Toast.LENGTH_LONG).show();
+            postsFragment.categories("A3lanat");
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
     private void addUserToDatabaseIfNotThere() {
         Log.d("Anaconda", "in activity addUserToDatabaseIfNotThere function");
         mUser = mAuth.getCurrentUser();
@@ -137,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserDataClass user = dataSnapshot.getValue(UserDataClass.class);
                 if (user == null) {
-                    user = new UserDataClass(mUser.getUid() , mUser.getDisplayName() , mUser.getEmail());
+                    user = new UserDataClass(mUser.getUid(), mUser.getDisplayName(), mUser.getEmail());
                     usersRef.child(mUser.getUid()).setValue(user);
                 }
             }
@@ -171,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onPause();
         Log.d("Anaconda", "in activity pause function");
         mAuth.removeAuthStateListener(authStateListener);
-        if(googleApiClient.isConnected())
+        if (googleApiClient.isConnected())
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
     }
 
@@ -196,26 +272,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("Anaconda", "in activity onOptionsItemSelected function");
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     public void notifications(View view) {
         Log.d("Anaconda", "in activity notifications function");
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.main_frahgment_container, new NotificationActivity());
         ft.addToBackStack(null);
         ft.commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
 
     }
+
 
     public void getProfileLayout(View view) {
         Log.d("Anaconda", "in activity getProfileLayout function");
@@ -225,21 +292,37 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    public void setActionBarTitle(String title) {
+      /*  if (title.equals("Favourites")) {
+            appName.setTextSize(13);
+        } else if (title.equals("Notifications")) {
+            appName.setTextSize(13);
+        } else {
+            appName.setTextSize(18);
+        }*/
+        appName.setText(title);
+    }
+
+
     public void setFavourites(View view) {
         Log.d("Anaconda", "in activity setFavourites function");
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.main_frahgment_container, new FavouritCategoriesFragment());
         ft.addToBackStack(null);
         ft.commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
+
 
     }
 
     public void setShareRequest(View view) {
         Log.d("Anaconda", "in activity setShareRequest function");
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.main_frahgment_container, new ShareRequestsFragment());
         ft.addToBackStack(null);
         ft.commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
+
 
     }
 
@@ -284,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+
     }
 
     @Override
@@ -307,15 +391,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.d("Anaconda", "in activity onLocationChanged function");
 
         postsLocationConnector.changeLocation(location);
-        int interval = 10*60*1000;
-        if(locationRequest.getInterval() < interval){
+        int interval = 10 * 60 * 1000;
+        if (locationRequest.getInterval() < interval) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
             defineLocationRequest(interval);
             requestLocationUpdates();
         }
     }
 
-    private void enableLocation(){
+    private void enableLocation() {
         Log.d("Anaconda", "in activity enableLocation function");
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);

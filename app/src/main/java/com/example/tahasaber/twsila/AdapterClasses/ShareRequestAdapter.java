@@ -111,11 +111,4 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
         }
     }
 
-   /* public void setrequesterid(ArrayList<RequestDataClass> reqs){
-        Log.v("ddddddddddddddddd",reqs.get(0).requesterId);
-        this.rdc=reqs;
-
-    }*/
-
-
 }

@@ -53,9 +53,9 @@ public class ShareRequestAdapter extends RecyclerView.Adapter<ShareRequestAdapte
             @Override
             public void onClick(View v) {
 
-                ShareRequestHandler srh=new ShareRequestHandler();
-                srh.addUserToPostChat(postId,requesterId);
-                srh.deleteRequest(postId,requesterId);
+                ShareRequestHandler srh = new ShareRequestHandler();
+                srh.addUserToPostChat(postId, requesterId);
+                srh.deleteRequest(postId, requesterId);
                 srh.getNumOfAcc(postId);
 
 

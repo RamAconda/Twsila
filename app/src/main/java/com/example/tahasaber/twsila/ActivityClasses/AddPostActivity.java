@@ -24,9 +24,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tahasaber.twsila.UtilityClasses.FirebaseHandler;
 import com.example.tahasaber.twsila.DataClasses.PostDataClass;
 import com.example.tahasaber.twsila.R;
+import com.example.tahasaber.twsila.UtilityClasses.FirebaseHandler;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;

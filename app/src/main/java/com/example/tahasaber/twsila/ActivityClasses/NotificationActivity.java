@@ -2,14 +2,13 @@ package com.example.tahasaber.twsila.ActivityClasses;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.tahasaber.twsila.DataClasses.NotificationDataClass;
 import com.example.tahasaber.twsila.AdapterClasses.NotificationListAdapter;
+import com.example.tahasaber.twsila.DataClasses.NotificationDataClass;
 import com.example.tahasaber.twsila.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class NotificationActivity extends Fragment {
+public class NotificationActivity extends android.app.Fragment {
 
     ListView listView;
     ArrayList<NotificationDataClass> notifications=new ArrayList<NotificationDataClass>();

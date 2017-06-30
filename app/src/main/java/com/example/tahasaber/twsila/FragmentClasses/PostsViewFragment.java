@@ -1,7 +1,5 @@
 package com.example.tahasaber.twsila.FragmentClasses;
 
-
-import android.app.Fragment;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -17,10 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.tahasaber.twsila.ActivityClasses.AddPostActivity;
+import com.example.tahasaber.twsila.ActivityClasses.MainActivity;
 import com.example.tahasaber.twsila.AdapterClasses.PostsCardViewAdapter;
 import com.example.tahasaber.twsila.DataClasses.PostDataClass;
-import com.example.tahasaber.twsila.UtilityClasses.PostsLocationConnector;
 import com.example.tahasaber.twsila.R;
+import com.example.tahasaber.twsila.UtilityClasses.PostsLocationConnector;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -33,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class PostsViewFragment extends Fragment implements PostsLocationConnector {
+public class PostsViewFragment extends android.app.Fragment implements PostsLocationConnector {
     private static final int PERMISSION_RESOLVER_CODE = 1;
     private static final int REQUEST_PERMISSION_CODE = 2;
 
@@ -43,9 +42,12 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton writePostButton;
+    private MainActivity mainActivity;
+    private static String categoryType = null;
+    private static ArrayList<PostDataClass> temporaryPosts = null;
     /*********************************************************************************************/
     //posts array list
-    ArrayList<PostDataClass> posts = null;
+    public static ArrayList<PostDataClass> posts = null;
     //database reference to the posts node in the firebase database
     DatabaseReference postsReference = null;//= FirebaseDatabase.getInstance().getReference().child("/posts");
     DatabaseReference geofireReference = null;
@@ -56,18 +58,47 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     GeoQueryEventListener geoQueryEventListener = null;
     //location variable got from the main activity
 
+
     /*********************************************************************************************/
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d("logging", "in fragment create function");
 
+
+        Toast.makeText(getActivity(), "Fragment posts", Toast.LENGTH_LONG).show();
         posts = new ArrayList<>();
 
         //initialization work of the recycler view
         View rootView = inflater.inflate(R.layout.fragment_posts, container, false);
 
         return recyclerViewInitializationWork(rootView);
+    }
+
+    public void categories(String category) {
+        categoryType = category;
+        if (category.equals("All")) {
+            mAdapter.notifyDataSetChanged();
+            mAdapter = new PostsCardViewAdapter(posts, getActivity());
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            temporaryPosts = new ArrayList<PostDataClass>();
+
+            for (int i = 0; i < posts.size(); i++) {
+                if (posts.get(i).getCategory().equals(category)) {
+                    temporaryPosts.add(posts.get(i));
+                }
+
+            }
+            Toast.makeText(getActivity(), Integer.toString(temporaryPosts.size()), Toast.LENGTH_LONG).show();
+
+
+            mAdapter.notifyDataSetChanged();
+            mAdapter = new PostsCardViewAdapter(temporaryPosts, getActivity());
+            mRecyclerView.setAdapter(mAdapter);
+        }
+
+
     }
 
     @Override
@@ -83,13 +114,14 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
             posts.clear();
             mAdapter.notifyItemRangeRemoved(0, size);
         }
-        if(geoQueryToSearchPosts != null && geoQueryEventListener != null)
+        if (geoQueryToSearchPosts != null && geoQueryEventListener != null)
             geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        ((MainActivity) getActivity()).setActionBarTitle("Twsila");
         Log.d("Anaconda", "in fragment resume function");
     }
 
@@ -97,8 +129,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     public void onStop() {
         super.onStop();
         Log.d("Anaconda", "in fragment stop function");
-        Toast.makeText(getActivity(), "onStop", Toast.LENGTH_LONG).show();
-        if(geoQueryToSearchPosts != null)
+        if (geoQueryToSearchPosts != null)
             geoQueryToSearchPosts.removeAllListeners();
     }
 
@@ -123,7 +154,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
 
         //GeoLocation geoLocation = getLastKnownLocation();
 
-        geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(geoLocation, 1000);
+        geoQueryToSearchPosts = geofireToSearchPosts.queryAtLocation(geoLocation, 1);
 
         //creating the listener and adding it to the geoQueryToSearchPosts.
         attachTheGeoQueryListener();
@@ -136,6 +167,7 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new PostsCardViewAdapter(posts, getActivity());
+
         mRecyclerView.setAdapter(mAdapter);
 
         writePostButton = (FloatingActionButton) rootView.findViewById(R.id.write_post_button);
@@ -208,23 +240,24 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
     }
 
     private boolean firstTimeCallChangeLocation = true;
+
     @Override
     public void changeLocation(Location location) {
         Log.d("Anaconda", "in fragment changeLocation function");
-        GeoLocation geoLocation = new GeoLocation(location.getLatitude() , location.getLongitude());
-        if(firstTimeCallChangeLocation) {
+        GeoLocation geoLocation = new GeoLocation(location.getLatitude(), location.getLongitude());
+        if (firstTimeCallChangeLocation) {
             firebaseInitializationWork(geoLocation);
             geoQueryToSearchPosts.addGeoQueryEventListener(geoQueryEventListener);
             firstTimeCallChangeLocation = false;
-        }
-        else {
+        } else {
             geoQueryToSearchPosts.setCenter(geoLocation);
         }
 
     }
 
-    public class RetreivePost extends AsyncTask<DatabaseReference,Void,PostDataClass> {
+    public class RetreivePost extends AsyncTask<DatabaseReference, Void, PostDataClass> {
         PostDataClass newPost = null;
+
         @Override
         protected void onPreExecute() {
 
@@ -232,14 +265,14 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
 
         @Override
         protected PostDataClass doInBackground(DatabaseReference... postsRef) {
-           for(DatabaseReference postRef : postsRef){
+            for (DatabaseReference postRef : postsRef) {
                 postRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d("Anaconda", "in fragment onKeyEntered onDataChange function");
                         //adding the post to the array.
                         newPost = dataSnapshot.getValue(PostDataClass.class);
-                     //   Log.v("geeeeeeeeeeeeeeda",newPost.getPost_body()+"");
+                        //   Log.v("geeeeeeeeeeeeeeda",newPost.getPost_body()+"");
                     }
 
                     @Override
@@ -249,20 +282,26 @@ public class PostsViewFragment extends Fragment implements PostsLocationConnecto
                 });
 
             }
-          while(newPost == null){
+            while (newPost == null) {
                 //waiting for retreiving the post
-            //  Log.v("null","nuuuuuuul");
+                //  Log.v("null","nuuuuuuul");
             }
             return newPost;
         }
 
         @Override
         protected void onPostExecute(PostDataClass postDataClass) {
-            posts.add(postDataClass);
 
-            // notifying the adapter that there is
-            //an element inserted.
-            mAdapter.notifyItemInserted(posts.size()-1);
+            if (postDataClass != null) {
+                //  Toast.makeText(getActivity(), postDataClass.getPost_body(), Toast.LENGTH_SHORT).show();
+                posts.add(postDataClass);
+
+
+                // notifying the adapter that there is
+                //an element inserted.
+                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyItemInserted(posts.size());
+            }
 
             //scroll to the beginning of the list
             //mRecyclerView.smoothScrollToPosition(0);

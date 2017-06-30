@@ -14,12 +14,12 @@
 
         <TextView
             android:id="@+id/app_name"
-            android:layout_width="80dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="Twsila"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textStyle="bold"/>
 
 
         <ImageButton
@@ -49,10 +49,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:onClick="setShareRequest"
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@id/noti_favourits"
             android:background="#34AEE8"
+            android:onClick="setShareRequest"
             android:src="@drawable/ic_person_add_black_24dp" />
 
 

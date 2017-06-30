@@ -12,9 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tahasaber.twsila.ActivityClasses.ChatActivity;
-import com.example.tahasaber.twsila.UtilityClasses.FirebaseHandler;
 import com.example.tahasaber.twsila.DataClasses.PostDataClass;
 import com.example.tahasaber.twsila.R;
+import com.example.tahasaber.twsila.UtilityClasses.FirebaseHandler;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,14 +34,14 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
     //PostDataClass[] PostDataClasses;
     ArrayList<PostDataClass> PostDataClasses;
     Context mcContext;
-    FirebaseHandler firebaseHandler;
+    FirebaseHandler shareRequestHandler;
     private FirebaseUser mUser;
 
 
     //changed to be dynamic adding and removing posts to the ArrayList
     //so I changed the regular array to ArrayList.
     public PostsCardViewAdapter(/*PostDataClass[] PostDataClasses*/
-                         ArrayList<PostDataClass> PostDataClasses, Context mcContext) {
+                                ArrayList<PostDataClass> PostDataClasses, Context mcContext) {
         this.PostDataClasses = PostDataClasses;
         this.mcContext = mcContext;
     }
@@ -80,9 +80,9 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
         postViewHolder.join_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-              /*  if (publisherId.equals(mUser.getUid())) {
+                if (publisherId.equals(mUser.getUid())) {
                     Toast.makeText(mcContext, "You are already joined, Start Chat", Toast.LENGTH_LONG).show();
-                } */ if (NoOfAcceptance <= 0) {
+                } else if (NoOfAcceptance <= 0) {
                     Toast.makeText(mcContext, "Sorry! This post is closed", Toast.LENGTH_LONG).show();
                 } else {
 
@@ -93,12 +93,12 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
                     mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                           /* if (snapshot.hasChild(mUser.getUid())) {
+                            if (snapshot.hasChild(mUser.getUid())) {
                                 Toast.makeText(mcContext, "You are already joined, Start Chat", Toast.LENGTH_LONG).show();
 
-                            } */ {
-                                firebaseHandler = new FirebaseHandler();
-                                firebaseHandler.sendShareRequest(publisherId, postId, mUser.getUid(), postBody, mUser.getDisplayName());
+                            } else {
+                                shareRequestHandler = new FirebaseHandler();
+                                shareRequestHandler.sendShareRequest(publisherId, postId, mUser.getUid(), postBody, mUser.getDisplayName());
                                 Toast.makeText(mcContext, "Request has sent successfully", Toast.LENGTH_LONG).show();
                             }
                         }
@@ -140,7 +140,7 @@ public class PostsCardViewAdapter extends RecyclerView.Adapter<PostsCardViewAdap
 
                         } else {
 
-                            Toast.makeText(mcContext, "Sorry! Join first" , Toast.LENGTH_LONG).show();
+                            Toast.makeText(mcContext, "Sorry! Join first", Toast.LENGTH_LONG).show();
                         }
                     }
 
